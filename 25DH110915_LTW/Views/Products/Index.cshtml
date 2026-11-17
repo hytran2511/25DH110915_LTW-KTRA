@@ -1,37 +1,163 @@
-﻿@model IEnumerable<_25DH110915_LTW.Models.Product>
+﻿@model _25DH110915_LTW.Models.ViewModel.ProductSearchVM
+@using PagedList.Mvc
 
 @{
-    ViewBag.Title = "Danh sách sản phẩm";
+    ViewBag.Title = Model.CategoryName ?? "Danh mục sản phẩm";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container mt-5 mb-5">
-    <h2 class="mb-4 fw-bold">Danh sách sản phẩm</h2>
+<div class="container mt-4 mb-5">
+    <div class="row">
+        <!-- CỘT TRÁI: DANH MỤC & BỘ LỌC TIÊU CHÍ -->
+        <div class="col-md-3 mb-4">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-primary text-white fw-bold">
+                    <i class="fa fa-list-ul me-2"></i>DANH MỤC SẢN PHẨM
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="@Url.Action("Index", "Products")" class="list-group-item list-group-item-action @(Model.CategoryID == null ? "active fw-bold" : "")">
+                        Tất cả danh mục
+                    </a>
+                    @if (Model.Categories != null)
+                    {
+                        foreach (var cat in Model.Categories)
+                        {
+                            <a href="@Url.Action("Index", "Products", new { categoryId = cat.CategoryID, searchTerm = Model.SearchTerm, minPrice = Model.MinPrice, maxPrice = Model.MaxPrice, sortOrder = Model.SortOrder })"
+                               class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @(Model.CategoryID == cat.CategoryID ? "active fw-bold" : "")">
+                                <span>@cat.CategoryName</span>
+                                <span class="badge @(Model.CategoryID == cat.CategoryID ? "bg-light text-primary" : "bg-secondary") rounded-pill">
+                                    @(cat.Products != null ? cat.Products.Count(p => p.Quantity > 0) : 0)
+                                </span>
+                            </a>
+                        }
+                    }
+                </div>
+            </div>
 
-    @if (!Model.Any())
-    {
-        <div class="alert alert-info">Chưa có sản phẩm nào thuộc danh mục này.</div>
-    }
-    else
-    {
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 row-cols-lg-5 g-4">
-            @foreach (var item in Model)
+            <!-- FORM TÌM KIẾM VÀ LỌC SẢN PHẨM -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-dark text-white fw-bold">
+                    <i class="fa fa-filter me-2"></i>BỘ LỌC TÌM KIẾM
+                </div>
+                <div class="card-body">
+                    @using (Html.BeginForm("Index", "Products", FormMethod.Get))
+                    {
+                        if (Model.CategoryID.HasValue)
+                        {
+                            <input type="hidden" name="categoryId" value="@Model.CategoryID" />
+                        }
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold small">Từ khóa tìm kiếm</label>
+                            <input type="text" name="searchTerm" value="@Model.SearchTerm" class="form-control form-control-sm" placeholder="Nhập tên sách, mô tả..." />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold small">Giá tối thiểu (VNĐ)</label>
+                            <input type="number" name="minPrice" value="@Model.MinPrice" class="form-control form-control-sm" placeholder="VD: 20000" min="0" step="1000" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold small">Giá tối đa (VNĐ)</label>
+                            <input type="number" name="maxPrice" value="@Model.MaxPrice" class="form-control form-control-sm" placeholder="VD: 500000" min="0" step="1000" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold small">Sắp xếp theo</label>
+                            <select name="sortOrder" class="form-select form-select-sm">
+                                <option value="" selected="@(string.IsNullOrEmpty(Model.SortOrder) ? "selected" : null)">Mới nhất</option>
+                                <option value="price_asc" selected="@(Model.SortOrder == "price_asc" ? "selected" : null)">Giá: Thấp đến Cao</option>
+                                <option value="price_desc" selected="@(Model.SortOrder == "price_desc" ? "selected" : null)">Giá: Cao đến Thấp</option>
+                                <option value="name_asc" selected="@(Model.SortOrder == "name_asc" ? "selected" : null)">Tên: A - Z</option>
+                                <option value="name_desc" selected="@(Model.SortOrder == "name_desc" ? "selected" : null)">Tên: Z - A</option>
+                                <option value="bestseller" selected="@(Model.SortOrder == "bestseller" ? "selected" : null)">Bán chạy nhất</option>
+                            </select>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-sm fw-bold">
+                                <i class="fa fa-search me-1"></i> Áp dụng lọc
+                            </button>
+                            <a href="@Url.Action("Index", "Products")" class="btn btn-outline-secondary btn-sm">
+                                Xóa bộ lọc
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- CỘT PHẢI: DANH SÁCH SẢN PHẨM & PHÂN TRANG -->
+        <div class="col-md-9">
+            <div class="d-flex justify-content-between align-items-center bg-white p-3 rounded shadow-sm mb-4">
+                <h4 class="mb-0 fw-bold text-primary">
+                    <i class="fa fa-book-open me-2"></i>@Model.CategoryName
+                </h4>
+                <span class="text-muted small">
+                    Hiển thị <strong>@(Model.Products != null ? Model.Products.TotalItemCount : 0)</strong> sản phẩm còn hàng
+                </span>
+            </div>
+
+            @if (Model.Products == null || !Model.Products.Any())
             {
-                <div class="col">
-                    <div class="product-card h-100 border p-3 text-center shadow-sm rounded">
-                        <a href="@Url.Action("Details", "Products", new { id = item.ProductID })" class="text-decoration-none">
-                            <img src="~/Images/@item.ProductImage" alt="@item.ProductName" style="width: 100%; height: 200px; object-fit: contain; margin-bottom: 15px;" onerror="this.src='https://via.placeholder.com/200?text=No+Image'" />
-                        </a>
-                        <a href="@Url.Action("Details", "Products", new { id = item.ProductID })" class="text-decoration-none text-dark">
-                            <h5 class="mt-2" style="font-size: 1rem; height: 40px; overflow: hidden;">@item.ProductName</h5>
-                        </a>
-                        <p class="text-danger fw-bold mt-2">@String.Format("{0:N0}", item.ProductPrice) VNĐ</p>
-                        <a href="@Url.Action("AddToCart", "Cart", new { id = item.ProductID })" class="btn btn-outline-secondary w-100">
-                            <i class="fa fa-shopping-cart"></i> Thêm vào giỏ
-                        </a>
-                    </div>
+                <div class="alert alert-warning text-center p-5 shadow-sm">
+                    <i class="fa fa-search fa-2x mb-2"></i>
+                    <h5>Không tìm thấy sản phẩm nào phù hợp tiêu chí lọc!</h5>
+                    <a href="@Url.Action("Index", "Products")" class="btn btn-primary btn-sm mt-2">Xem tất cả sản phẩm</a>
+                </div>
+            }
+            else
+            {
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
+                    @foreach (var item in Model.Products)
+                    {
+                        string imgSrc = !string.IsNullOrEmpty(item.ProductImage)
+                            ? (item.ProductImage.StartsWith("http") || item.ProductImage.StartsWith("/") || item.ProductImage.StartsWith("~")
+                                ? Url.Content(item.ProductImage)
+                                : Url.Content("~/Images/" + item.ProductImage))
+                            : "https://via.placeholder.com/200?text=No+Image";
+                        int soldQty = item.OrderDetails != null ? item.OrderDetails.Sum(od => (int?)od.Quantity) ?? 0 : 0;
+
+                        <div class="col">
+                            <div class="card h-100 border-0 shadow-sm p-3 text-center">
+                                <a href="@Url.Action("Details", "Products", new { id = item.ProductID })" class="text-decoration-none">
+                                    <img src="@imgSrc" alt="@item.ProductName" style="width: 100%; height: 180px; object-fit: contain; margin-bottom: 12px;" onerror="this.src='https://via.placeholder.com/200?text=No+Image'" />
+                                </a>
+                                <span class="badge bg-light text-secondary mb-1">@(item.Category != null ? item.Category.CategoryName : "")</span>
+                                <a href="@Url.Action("Details", "Products", new { id = item.ProductID })" class="text-decoration-none text-dark">
+                                    <h6 class="fw-bold mb-1" style="height: 40px; overflow: hidden;" title="@item.ProductName">@item.ProductName</h6>
+                                </a>
+                                <p class="text-danger fw-bold fs-6 mb-1">@String.Format("{0:N0}", item.ProductPrice) VNĐ</p>
+                                <div class="small text-muted mb-3">
+                                    Tồn: <strong>@item.Quantity</strong> | Đã bán: <strong>@soldQty</strong>
+                                </div>
+
+                                <div class="mt-auto d-flex gap-1">
+                                    <a href="@Url.Action("Details", "Products", new { id = item.ProductID })" class="btn btn-sm btn-outline-primary flex-fill">
+                                        Chi tiết
+                                    </a>
+                                    <a href="@Url.Action("AddToCart", "Cart", new { id = item.ProductID, quantity = 1 })" class="btn btn-sm btn-danger flex-fill">
+                                        <i class="fa fa-cart-plus"></i> Mua
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <!-- PHÂN TRANG KẾT QUẢ TÌM KIẾM & LỌC -->
+                <div class="d-flex justify-content-center mt-4">
+                    @Html.PagedListPager(Model.Products, page => Url.Action("Index", "Products", new
+                    {
+                        page,
+                        categoryId = Model.CategoryID,
+                        searchTerm = Model.SearchTerm,
+                        minPrice = Model.MinPrice,
+                        maxPrice = Model.MaxPrice,
+                        sortOrder = Model.SortOrder
+                    }))
                 </div>
             }
         </div>
-    }
+    </div>
 </div>

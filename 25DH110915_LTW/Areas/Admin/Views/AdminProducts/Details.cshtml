@@ -7,16 +7,13 @@
 
 <div class="card mt-4" style="max-width: 900px; margin: 0 auto; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: none;">
     <div class="card-header bg-info text-white text-center" style="font-size: 1.25rem; font-weight: bold; text-transform: uppercase;">
-        <i class="fa fa-info-circle"></i> THÔNG TIN CHI TIẾT SẢN PHẨM
+        <i class="fa fa-info-circle"></i> THÔNG TIN CHI TIẾT SẢN PHẨM (ADMIN)
     </div>
     <div class="card-body p-0">
-
-        <!-- GỌI GIAO DIỆN DÙNG CHUNG VÀO ĐÂY -->
+        <!-- TÁI SỬ DỤNG PARTIAL VIEW DETAIL PRODUCT DÙNG CHUNG VỚI TRANG CUSTOMER (KHÔNG CÓ NÚT MUA HÀNG) -->
         @Html.Partial("~/Views/Shared/_ProductDetailPartial.cshtml", Model)
-
     </div>
 
-    <!-- ADMIN THÌ CÓ NÚT SỬA VÀ QUAY LẠI -->
     <div class="card-footer bg-white text-center py-3">
         @Html.ActionLink("Sửa Sản phẩm", "Edit", new { id = Model.ProductID }, new { @class = "btn btn-warning px-4 fw-bold" })
         @Html.ActionLink("Quay lại danh sách", "Index", null, new { @class = "btn btn-outline-secondary ms-2" })

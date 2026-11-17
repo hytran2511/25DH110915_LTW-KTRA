@@ -1,63 +1,79 @@
 ﻿@model _25DH110915_LTW.Models.ViewModel.HomeProductVM
-@using PagedList.Mvc;
+@using System
+@using System.Collections.Generic
+@using System.Linq
+@using PagedList.Mvc
 
 @{
     ViewBag.Title = "Trang chủ";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var categories = ViewBag.Categories as List<_25DH110915_LTW.Models.Category>;
 }
-<!-- Thêm CSS hỗ trợ cho thanh phân trang -->
+
 <link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 
 <style>
     /* CSS CHO BANNER LỚN TRÀN MÀN HÌNH */
     .banner {
         background-image: url('https://images.unsplash.com/photo-1497215728101-856f4ea42174?q=80&w=2070');
-        background-size: cover; /* Phủ kín khung */
-        background-position: center; /* Canh giữa ảnh */
-        height: 500px; /* Chiều cao banner */
-        display: flex; /* Dùng flexbox */
-        align-items: center; /* Căn giữa dọc */
-        justify-content: center; /* Căn giữa ngang */
+        background-size: cover;
+        background-position: center;
+        height: 460px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         margin-bottom: 40px;
+        border-radius: 8px;
     }
 
     .banner-content {
-        text-align: center; /* Chữ canh giữa */
-        color: #fff; /* Chữ trắng */
+        text-align: center;
+        color: #fff;
     }
 
-        .banner-content h2 {
-            font-size: 50px; /* Chữ lớn */
-            font-weight: 900;
-            text-transform: uppercase;
-            margin-bottom: 20px; /* Khoảng cách dưới */
-            text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
-        }
+    .banner-content h2 {
+        font-size: 48px;
+        font-weight: 900;
+        text-transform: uppercase;
+        margin-bottom: 20px;
+        text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+    }
 
-        .banner-content p {
-            font-size: 22px; /* Cỡ chữ */
-            margin-bottom: 30px; /* Khoảng cách dưới */
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
-        }
+    .banner-content p {
+        font-size: 22px;
+        margin-bottom: 30px;
+        text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+    }
 
     .btn-banner {
-        display: inline-block; /* Hiển thị khối */
-        padding: 12px 30px; /* Khoảng cách trong */
-        background-color: #00bcd4; /* Nền xanh lục */
-        color: #fff !important; /* Chữ trắng */
-        text-decoration: none; /* Không gạch chân */
-        font-weight: bold; /* In đậm */
+        display: inline-block;
+        padding: 12px 30px;
+        background-color: #00bcd4;
+        color: #fff !important;
+        text-decoration: none;
+        font-weight: bold;
         text-transform: uppercase;
     }
 
     /* CSS CHO LƯỚI DANH MỤC CATEGORY */
     .cat-box {
-        height: 200px;
+        height: 185px;
         padding: 20px;
         color: white;
         font-weight: bold;
+        font-size: 18px;
         position: relative;
         overflow: hidden;
+        border-radius: 6px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .cat-box:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 15px rgba(0,0,0,0.15);
     }
 
     .cat-blue {
@@ -77,132 +93,186 @@
         background-color: #ff7f00;
     }
 
-    /* CSS CHO DANH SÁCH SẢN PHẨM NỔI BẬT */
+    /* CSS CHO DANH SÁCH SẢN PHẨM */
     .featured-products {
         text-align: center;
-        margin-top: 50px;
+        margin-top: 45px;
     }
-        /* Căn giữa */
-        .featured-products h2 {
-            font-size: 24px;
-            margin-bottom: 30px;
-            font-weight: bold;
-        }
-    /* Tiêu đề */
-    .product-container {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 30px;
+
+    .featured-products h2 {
+        font-size: 24px;
+        margin-bottom: 25px;
+        font-weight: bold;
     }
-    /* Flexbox bọc sản phẩm */
-    .product-item {
-        width: 220px;
+
+    .product-card {
+        background: #fff;
+        border-radius: 8px;
+        padding: 15px;
         text-align: center;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        display: flex;
+        flex-direction: column;
+        transition: transform 0.2s, box-shadow 0.2s;
     }
-        /* Kích thước từng món */
-        .product-item img {
-            width: 100%;
-            height: 200px;
-            object-fit: contain;
-            margin-bottom: 15px;
-        }
-        /* Hình ảnh */
-        .product-item h3 {
-            font-size: 14px;
-            margin: 10px 0;
-            color: #666;
-            font-weight: normal;
-        }
-        /* Tên sản phẩm */
-        .product-item .price {
-            font-weight: bold;
-            color: #e74c3c;
-            font-size: 16px;
-        }
-    /* Giá tiền */
+
+    .product-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+    }
+
+    .product-title {
+        font-size: 14px;
+        margin: 10px 0 6px;
+        color: #333;
+        font-weight: 600;
+        height: 40px;
+        overflow: hidden;
+    }
+
+    .product-price {
+        font-weight: bold;
+        color: #e74c3c;
+        font-size: 16px;
+        margin-bottom: 8px;
+    }
 </style>
 
 <!-- KHU VỰC BANNER -->
 <section class="banner">
-    <!-- Thẻ bao ngoài banner -->
     <div class="banner-content">
-        <!-- Khối chứa nội dung -->
-        <p>Equipment you need</p> <!-- Đoạn mô tả -->
-        <h2>For your new<br />office</h2> <!-- Tiêu đề lớn -->
-        <a href="#latest" class="btn-banner">READ MORE</a> <!-- Nút bấm -->
+        <p>Equipment you need</p>
+        <h2>For your new<br />office</h2>
+        <a href="#latest" class="btn-banner">READ MORE</a>
     </div>
 </section>
 
 <div class="container">
-    <!-- KHU VỰC LƯỚI CATEGORY ĐẶC TRƯNG MẪU 1 -->
+    <!-- KHU VỰC LƯỚI CATEGORY ĐẶC TRƯNG MẪU 1 (LẤY THEO CATEGORY TRONG DB) -->
+    @{
+        string cat1Name = categories != null && categories.Count > 0 ? categories[0].CategoryName : "Kinh tế";
+        int cat1Id = categories != null && categories.Count > 0 ? categories[0].CategoryID : 1;
+
+        string cat2Name = categories != null && categories.Count > 1 ? categories[1].CategoryName : "Kỹ năng sống";
+        int cat2Id = categories != null && categories.Count > 1 ? categories[1].CategoryID : 2;
+
+        string cat3Name = categories != null && categories.Count > 2 ? categories[2].CategoryName : "Thiếu nhi";
+        int cat3Id = categories != null && categories.Count > 2 ? categories[2].CategoryID : 3;
+
+        string cat4Name = categories != null && categories.Count > 3 ? categories[3].CategoryName : "Truyện tranh";
+        int cat4Id = categories != null && categories.Count > 3 ? categories[3].CategoryID : 4;
+
+        string cat5Name = categories != null && categories.Count > 4 ? categories[4].CategoryName : "Nghệ thuật";
+        int cat5Id = categories != null && categories.Count > 4 ? categories[4].CategoryID : 5;
+    }
+
     <div class="row g-4 mb-5">
         <div class="col-md-3">
-            <!-- Thêm thẻ a bọc ngoài div, class d-block giúp link phủ kín toàn bộ khối màu -->
-            <a href="@Url.Action("Index", "Products", new { categoryId = 1 })" class="text-decoration-none d-block">
-                <div class="cat-box cat-blue">Paper & Mailing ></div>
+            <a href="@Url.Action("Index", "Products", new { categoryId = cat1Id })" class="text-decoration-none d-block">
+                <div class="cat-box cat-blue">
+                    <span>@cat1Name &gt;</span>
+                </div>
             </a>
         </div>
         <div class="col-md-6">
-            <a href="@Url.Action("Index", "Products", new { categoryId = 2 })" class="text-decoration-none d-block">
-                <div class="cat-box cat-yellow">Furniture ></div>
+            <a href="@Url.Action("Index", "Products", new { categoryId = cat2Id })" class="text-decoration-none d-block">
+                <div class="cat-box cat-yellow">
+                    <span>@cat2Name &gt;</span>
+                </div>
             </a>
         </div>
         <div class="col-md-3">
-            <a href="@Url.Action("Index", "Products", new { categoryId = 3 })" class="text-decoration-none d-block">
-                <div class="cat-box cat-dark">Organization ></div>
+            <a href="@Url.Action("Index", "Products", new { categoryId = cat3Id })" class="text-decoration-none d-block">
+                <div class="cat-box cat-dark">
+                    <span>@cat3Name &gt;</span>
+                </div>
             </a>
         </div>
         <div class="col-md-3 offset-md-3">
-            <a href="@Url.Action("Index", "Products", new { categoryId = 4 })" class="text-decoration-none d-block">
-                <div class="cat-box cat-orange">Writing ></div>
+            <a href="@Url.Action("Index", "Products", new { categoryId = cat4Id })" class="text-decoration-none d-block">
+                <div class="cat-box cat-orange">
+                    <span>@cat4Name &gt;</span>
+                </div>
             </a>
         </div>
         <div class="col-md-3">
-            <a href="@Url.Action("Index", "Products", new { categoryId = 5 })" class="text-decoration-none d-block">
-                <div class="cat-box cat-blue">Cleaning ></div>
+            <a href="@Url.Action("Index", "Products", new { categoryId = cat5Id })" class="text-decoration-none d-block">
+                <div class="cat-box cat-blue">
+                    <span>@cat5Name &gt;</span>
+                </div>
             </a>
         </div>
     </div>
 
-    <!-- KHU VỰC SẢN PHẨM NỔI BẬT -->
+    <!-- KHU VỰC SẢN PHẨM NỔI BẬT (FEATURED PRODUCTS - SỐ LƯỢNG TỒN > 0) -->
+    @if (Model.FeaturedProducts != null && Model.FeaturedProducts.Any())
+    {
+        <section class="featured-products mb-5">
+            <h2>Featured products (Sản phẩm nổi bật)</h2>
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 row-cols-lg-5 g-4">
+                @foreach (var item in Model.FeaturedProducts)
+                {
+                    string imgSrc = !string.IsNullOrEmpty(item.ProductImage)
+                        ? (item.ProductImage.StartsWith("http") || item.ProductImage.StartsWith("/") || item.ProductImage.StartsWith("~")
+                            ? Url.Content(item.ProductImage)
+                            : Url.Content("~/Images/" + item.ProductImage))
+                        : "https://via.placeholder.com/200?text=No+Image";
+                    int soldQty = item.OrderDetails != null ? item.OrderDetails.Sum(od => (int?)od.Quantity) ?? 0 : 0;
+
+                    <div class="col">
+                        <div class="product-card h-100">
+                            <a href="@Url.Action("Details", "Products", new { id = item.ProductID, area = "" })" class="text-decoration-none">
+                                <img src="@imgSrc" alt="@item.ProductName" style="width: 100%; height: 185px; object-fit: contain; margin-bottom: 10px;" onerror="this.src='https://via.placeholder.com/200?text=No+Image'" />
+                            </a>
+                            <a href="@Url.Action("Details", "Products", new { id = item.ProductID, area = "" })" class="text-decoration-none">
+                                <h3 class="product-title" title="@item.ProductName">@item.ProductName</h3>
+                            </a>
+                            <p class="product-price">@String.Format("{0:N0}", item.ProductPrice) VNĐ</p>
+                            <div class="small text-muted mb-2">Đã bán: @soldQty | Tồn: @item.Quantity</div>
+                            <a href="@Url.Action("AddToCart", "Cart", new { id = item.ProductID, quantity = 1, area = "" })" class="btn btn-sm btn-outline-secondary w-100 mt-auto">
+                                <i class="fa fa-shopping-cart"></i> Add to Cart
+                            </a>
+                        </div>
+                    </div>
+                }
+            </div>
+        </section>
+    }
+
+    <!-- KHU VỰC SẢN PHẨM MỚI (LATEST PRODUCTS - SỐ LƯỢNG TỒN > 0, PHÂN TRANG) -->
     <section class="featured-products" id="latest">
-        <!-- Phần sản phẩm nổi bật -->
-        <h2>Latest products</h2> <!-- Tiêu đề -->
+        <h2>Latest products (Sản phẩm mới)</h2>
 
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 row-cols-lg-5 g-4">
             @foreach (var item in Model.NewProducts)
             {
+                string imgSrc = !string.IsNullOrEmpty(item.ProductImage)
+                    ? (item.ProductImage.StartsWith("http") || item.ProductImage.StartsWith("/") || item.ProductImage.StartsWith("~")
+                        ? Url.Content(item.ProductImage)
+                        : Url.Content("~/Images/" + item.ProductImage))
+                    : "https://via.placeholder.com/200?text=No+Image";
+
                 <div class="col">
-                    <!-- Nội dung thẻ sản phẩm -->
                     <div class="product-card h-100">
                         <a href="@Url.Action("Details", "Products", new { id = item.ProductID, area = "" })" class="text-decoration-none">
-                            <img src="~/Images/@item.ProductImage" alt="@item.ProductName" style="width: 100%; height: 200px; object-fit: contain; margin-bottom: 15px;" onerror="this.src='https://via.placeholder.com/200?text=No+Image'" />
+                            <img src="@imgSrc" alt="@item.ProductName" style="width: 100%; height: 185px; object-fit: contain; margin-bottom: 10px;" onerror="this.src='https://via.placeholder.com/200?text=No+Image'" />
                         </a>
-                        <h3 class="product-title" title="@item.ProductName">@item.ProductName</h3>
+                        <a href="@Url.Action("Details", "Products", new { id = item.ProductID, area = "" })" class="text-decoration-none">
+                            <h3 class="product-title" title="@item.ProductName">@item.ProductName</h3>
+                        </a>
                         <p class="product-price">@String.Format("{0:N0}", item.ProductPrice) VNĐ</p>
-                        <a href="@Url.Action("AddToCart", "Cart", new { id = item.ProductID, area = "" })" class="btn btn-sm btn-outline-secondary w-100">
+                        <div class="small text-muted mb-2">Tồn kho: @item.Quantity</div>
+                        <a href="@Url.Action("AddToCart", "Cart", new { id = item.ProductID, quantity = 1, area = "" })" class="btn btn-sm btn-outline-secondary w-100 mt-auto">
                             <i class="fa fa-shopping-cart"></i> Add to Cart
                         </a>
                     </div>
                 </div>
             }
         </div>
+
         <!-- Hiển thị phân trang -->
         <div class="d-flex justify-content-center mt-4">
-            @Html.PagedListPager(Model.NewProducts, page => Url.Action("Index", new { page, searchTerm = Model.SearchTerm }),
-                          new PagedListRenderOptions
-                          {
-                              LiElementClasses = new string[] { "page-item" },
-                              // Dùng class page-link cho các thẻ a bên trong
-                              FunctionToTransformEachPageLink = (liTag, aTag) =>
-                              {
-                                  aTag.Attributes.Add("class", "page-link");
-                                  liTag.InnerHtml = aTag.ToString();
-                                  return liTag;
-                              }
-                          }
-                      )
+            @Html.PagedListPager(Model.NewProducts, page => Url.Action("Index", new { page, searchTerm = Model.SearchTerm }))
         </div>
     </section>
 </div>

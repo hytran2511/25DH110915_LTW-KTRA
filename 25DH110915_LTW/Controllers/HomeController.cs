@@ -1,72 +1,91 @@
-﻿using _25DH110915_LTW.Models; 
+﻿using _25DH110915_LTW.Models;
+using _25DH110915_LTW.Models.ViewModel;
+using PagedList;
+using System.Data.Entity;
 using System.Linq;
 using System.Web.Mvc;
-using PagedList;
-using _25DH110915_LTW.Models.ViewModel;
 
 namespace _25DH110915_LTW.Controllers
 {
     public class HomeController : Controller
     {
-        // Khởi tạo Database Context
         private MyStoreEntities db = new MyStoreEntities();
 
-        // Cập nhật hàm Index nhận thêm tham số searchTerm và page
-        public ActionResult Index(string searchTerm, int? page)
+        // Child Action lấy danh sách Category cho Menu trên _Layout
+        [ChildActionOnly]
+        public ActionResult CategoryMenu()
+        {
+            var categories = db.Categories.Include(c => c.Products).ToList();
+            return PartialView("~/Views/Shared/_CategoryMenu.cshtml", categories);
+        }
+
+        // Trang Home: Hiển thị danh mục theo DB, Sản phẩm nổi bật và Sản phẩm mới (chỉ lấy Quantity > 0)
+        public ActionResult Index(string searchTerm, int? categoryId, int? page)
         {
             var model = new HomeProductVM();
-            // Lấy danh sách sản phẩm, chỉ lấy những sản phẩm còn hàng (Quantity > 0)
-            var products = db.Products.Where(p => p.Quantity > 0).AsQueryable();
+            var products = db.Products
+                             .Include(p => p.Category)
+                             .Include(p => p.OrderDetails)
+                             .Where(p => p.Quantity > 0)
+                             .AsQueryable();
 
-            // 1. TÌM KIẾM
-            if (!string.IsNullOrEmpty(searchTerm))
+            if (categoryId.HasValue)
             {
-                model.SearchTerm = searchTerm;
-                // Tìm theo tên, mô tả hoặc tên danh mục
-                products = products.Where(p => p.ProductName.Contains(searchTerm) ||
-                                               p.ProductDecription.Contains(searchTerm) ||
-                                               p.Category.CategoryName.Contains(searchTerm));
+                products = products.Where(p => p.CategoryID == categoryId.Value);
             }
 
-            // 2. ĐOẠN CODE LIÊN QUAN TỚI PHÂN TRANG
-            int pageNumber = page ?? 1; // Nếu page null thì mặc định là trang 1
-            int pageSize = 6; // Số sản phẩm mỗi trang
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                model.SearchTerm = searchTerm.Trim();
+                products = products.Where(p => p.ProductName.Contains(model.SearchTerm) ||
+                                               p.ProductDecription.Contains(model.SearchTerm) ||
+                                               p.Category.CategoryName.Contains(model.SearchTerm));
+            }
 
-            // Lấy top 10 sản phẩm bán chạy nhất cho phần Nổi bật
-            model.FeaturedProducts = products.OrderByDescending(p => p.OrderDetails.Count()).Take(10).ToList();
+            int pageNumber = page ?? 1;
+            int pageSize = 8;
 
-            // Lấy 20 sản phẩm mới nhất (hoặc ít bán nhất) và phân trang
-            model.NewProducts = products.OrderBy(p => p.ProductID).Take(20).ToPagedList(pageNumber, pageSize);
+            // Sản phẩm nổi bật (Bán chạy nhất theo tổng số lượng đã bán trong OrderDetails)
+            model.FeaturedProducts = products
+                .OrderByDescending(p => p.OrderDetails.Sum(od => (int?)od.Quantity) ?? 0)
+                .ThenByDescending(p => p.ProductID)
+                .Take(5)
+                .ToList();
 
+            // Sản phẩm mới nhất có phân trang
+            model.NewProducts = products
+                .OrderByDescending(p => p.ProductID)
+                .ToPagedList(pageNumber, pageSize);
+
+            ViewBag.Categories = db.Categories.Include(c => c.Products).ToList();
             return View(model);
+        }
+
+        public ActionResult ProductDetail(int id)
+        {
+            var product = db.Products
+                            .Include(p => p.Category)
+                            .Include(p => p.OrderDetails)
+                            .SingleOrDefault(p => p.ProductID == id);
+            if (product == null) return HttpNotFound();
+            return View(product);
         }
 
         public ActionResult About()
         {
-            ViewBag.Message = "Your application description page.";
+            ViewBag.Message = "Đồ án Lập trình Web - Sinh viên: Trần Gia Hy (25DH110915)";
             return View();
         }
 
         public ActionResult Contact()
         {
-            ViewBag.Message = "Your contact page.";
+            ViewBag.Message = "Liên hệ Trần Gia Hy - 25DH110915";
             return View();
         }
-        // GET: /Home/Search
+
         public ActionResult Search(string keyword)
         {
-            // Lấy toàn bộ sản phẩm
-            var products = db.Products.AsQueryable();
-
-            // Nếu người dùng có nhập từ khóa
-            if (!string.IsNullOrEmpty(keyword))
-            {
-                // Tìm những sản phẩm có tên chứa từ khóa (không phân biệt hoa thường)
-                products = products.Where(p => p.ProductName.Contains(keyword));
-                ViewBag.Keyword = keyword; // Lưu lại từ khóa để hiển thị ra View
-            }
-
-            return View(products.ToList());
+            return RedirectToAction("Index", "Products", new { searchTerm = keyword });
         }
     }
 }

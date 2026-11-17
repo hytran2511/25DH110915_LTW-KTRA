@@ -6,75 +6,155 @@
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h2 class="bg-success" style="padding: 10px;">DANH SÁCH ĐƠN HÀNG</h2>
+<style>
+    .order-search-bar {
+        margin-top: 10px;
+        margin-bottom: 18px;
+    }
 
-<!-- Form Tìm kiếm -->
-<div style="margin-bottom: 20px;">
-    @using (Html.BeginForm("Index", "Orders", FormMethod.Get, new { @class = "form-inline" }))
+    .order-search-bar label {
+        font-weight: 400;
+        color: #333;
+        margin-bottom: 6px;
+        display: block;
+    }
+
+    .order-search-bar .form-control,
+    .order-search-bar .form-select {
+        border: 1px solid #555;
+        border-radius: 2px;
+        height: 34px;
+        padding: 4px 10px;
+        font-size: 14px;
+    }
+
+    .order-heading-bar {
+        background-color: #dff0d8;
+        color: #333333;
+        padding: 8px 12px;
+        font-size: 28px;
+        font-weight: 400;
+        margin-bottom: 10px;
+    }
+
+    .order-list-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+
+    .order-list-table thead tr {
+        background-color: #dff0d8;
+        color: #333;
+    }
+
+    .order-list-table th {
+        padding: 10px 12px;
+        font-weight: 700;
+        border-top: 1px solid #ddd;
+        border-bottom: 2px solid #ddd;
+    }
+
+    .order-list-table tbody tr {
+        background-color: #d9edf7;
+        border-bottom: 1px solid #c4e3f3;
+    }
+
+    .order-list-table tbody tr:nth-child(even) {
+        background-color: #e4f3fa;
+    }
+
+    .order-list-table td {
+        padding: 10px 12px;
+        color: #333;
+        vertical-align: middle;
+    }
+
+    .order-list-table td a {
+        color: #337ab7;
+        text-decoration: none;
+    }
+
+    .order-list-table td a:hover {
+        text-decoration: underline;
+    }
+</style>
+
+<!-- Form Tìm kiếm giống giao diện PPT Slide 3 -->
+<div class="order-search-bar">
+    @using (Html.BeginForm("Index", "Orders", new { area = "Admin" }, FormMethod.Get))
     {
-        <div class="form-group" style="display:inline-block; margin-right: 10px;">
-            <label>Tên khách hàng</label><br />
-            <input type="text" name="searchName" value="@ViewBag.SearchName" class="form-control" />
-        </div>
-        <div class="form-group" style="display:inline-block; margin-right: 10px;">
-            <label>Trạng thái thanh toán</label><br />
-            <select name="paymentStatus" class="form-control">
-                <option value="">-- Tất cả --</option>
-                <option value="Chưa thanh toán" @(ViewBag.PaymentStatus == "Chưa thanh toán" ? "selected" : "")>Chưa thanh toán</option>
-                <option value="Đã thanh toán" @(ViewBag.PaymentStatus == "Đã thanh toán" ? "selected" : "")>Đã thanh toán</option>
-                <option value="Thanh toán tiền mặt" @(ViewBag.PaymentStatus == "Thanh toán tiền mặt" ? "selected" : "")>Thanh toán tiền mặt</option>
-            </select>
-        </div>
-        <div class="form-group" style="display:inline-block; margin-right: 10px;">
-            <label>Ngày đặt hàng</label><br />
-            <input type="date" name="orderDate" value="@ViewBag.OrderDate" class="form-control" />
-        </div>
-        <div class="form-group" style="display:inline-block; vertical-align: bottom;">
-            <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+        <div class="row align-items-end">
+            <div class="col-md-3 mb-2">
+                <label>Tên khách hàng</label>
+                <input type="text" name="searchName" value="@ViewBag.SearchName" class="form-control" style="max-width: 240px;" />
+            </div>
+            <div class="col-md-3 mb-2">
+                <label>Trạng thái thanh toán</label>
+                <select name="paymentStatus" class="form-select" style="max-width: 240px;">
+                    <option value="">-- Tất cả --</option>
+                    <option value="Chưa thanh toán" selected="@(ViewBag.PaymentStatus == "Chưa thanh toán" ? "selected" : null)">Chưa thanh toán</option>
+                    <option value="Chờ thanh toán" selected="@(ViewBag.PaymentStatus == "Chờ thanh toán" ? "selected" : null)">Chờ thanh toán</option>
+                    <option value="Thanh toán tiền mặt" selected="@(ViewBag.PaymentStatus == "Thanh toán tiền mặt" ? "selected" : null)">Thanh toán tiền mặt</option>
+                    <option value="Thanh toán paypal" selected="@(ViewBag.PaymentStatus == "Thanh toán paypal" ? "selected" : null)">Thanh toán paypal</option>
+                    <option value="Đang xử lý" selected="@(ViewBag.PaymentStatus == "Đang xử lý" ? "selected" : null)">Đang xử lý</option>
+                    <option value="Đang vận chuyển" selected="@(ViewBag.PaymentStatus == "Đang vận chuyển" ? "selected" : null)">Đang vận chuyển</option>
+                    <option value="Đã giao" selected="@(ViewBag.PaymentStatus == "Đã giao" ? "selected" : null)">Đã giao</option>
+                    <option value="Đã hủy" selected="@(ViewBag.PaymentStatus == "Đã hủy" ? "selected" : null)">Đã hủy</option>
+                    <option value="Đã thanh toán" selected="@(ViewBag.PaymentStatus == "Đã thanh toán" ? "selected" : null)">Đã thanh toán</option>
+                </select>
+            </div>
+            <div class="col-md-3 mb-2">
+                <label>Ngày đặt hàng</label>
+                <input type="date" name="orderDate" value="@ViewBag.OrderDate" class="form-control" style="max-width: 240px;" />
+            </div>
+            <div class="col-md-3 mb-2">
+                <button type="submit" class="btn btn-primary px-4" style="background-color: #337ab7; border-color: #2e6da4;">Tìm kiếm</button>
+            </div>
         </div>
     }
 </div>
 
-<!-- Bảng dữ liệu -->
+<div class="order-heading-bar">DANH SÁCH ĐƠN HÀNG</div>
+
 @if (Model == null || !Model.Any())
 {
-    <div class="alert alert-warning text-center" style="font-size: 18px; font-weight: bold;">
+    <div class="alert alert-warning text-center my-4" style="font-size: 18px; font-weight: bold;">
         KHÔNG CÓ
     </div>
 }
 else
 {
-    <table class="table table-bordered table-striped">
+    <table class="order-list-table">
         <thead>
-            <tr class="bg-info">
+            <tr>
                 <th>Ngày đặt hàng</th>
                 <th>Tên khách hàng</th>
                 <th>Tổng giá trị</th>
-                <th>Trạng thái TT</th>
-                <th>Phương thức Giao hàng</th>
-                <th>Thao tác</th>
+                <th>Trạng thái thanh toán</th>
+                <th>Phương thức giao hàng</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
             @foreach (var item in Model)
             {
                 <tr>
-                    <td>@String.Format("{0:dd/MM/yyyy HH:mm}", item.OrderDate)</td>
-                    <td>@item.Customer.CustomerName</td>
-                    <td style="color:red;">@item.TotalAmount.ToString("N0") VNĐ</td>
+                    <td>@item.OrderDate.ToString("M/d/yyyy hh:mm:ss tt")</td>
+                    <td>@(item.Customer != null ? item.Customer.CustomerName : "")</td>
+                    <td>@item.TotalAmount.ToString("0.00")</td>
                     <td>@item.PaymentStatus</td>
                     <td>@item.DeliveryMethod</td>
                     <td>
-                        <!-- TUYỆT ĐỐI CHỈ CÓ NÚT XEM CHI TIẾT -->
-                        @Html.ActionLink("Chi tiết đơn hàng", "Details", new { id = item.OrderID }, new { @class = "text-primary" })
+                        @Html.ActionLink("Chi tiết đơn hàng", "DetailedOrder", "Orders", new { area = "Admin", id = item.OrderID }, null)
                     </td>
                 </tr>
             }
         </tbody>
     </table>
 
-    <!-- Phân trang -->
+    <!-- Phân trang 15 đơn hàng/trang -->
     <div>
-        @Html.PagedListPager(Model, page => Url.Action("Index", new { page, searchName = ViewBag.SearchName, paymentStatus = ViewBag.PaymentStatus, orderDate = ViewBag.OrderDate }))
+        @Html.PagedListPager(Model, page => Url.Action("Index", "Orders", new { area = "Admin", page, searchName = ViewBag.SearchName, paymentStatus = ViewBag.PaymentStatus, orderDate = ViewBag.OrderDate }))
     </div>
 }

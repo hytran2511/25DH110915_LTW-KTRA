@@ -1,17 +1,27 @@
 ﻿@model IEnumerable<_25DH110915_LTW.Models.Category>
 
 <li class="nav-item dropdown">
-    <a class="nav-link dropdown-toggle text-white" href="#" data-bs-toggle="dropdown">
-        Danh mục
+    <a class="nav-link dropdown-toggle" href="@Url.Action("Index", "Products", new { area = "" })" id="categoryDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="fa fa-bars me-1"></i> Danh mục
     </a>
-    <ul class="dropdown-menu">
-        @foreach (var item in Model)
+    <ul class="dropdown-menu shadow-sm border-0" aria-labelledby="categoryDropdown">
+        <li>
+            <a class="dropdown-item fw-bold text-primary" href="@Url.Action("Index", "Products", new { area = "" })">
+                <i class="fa fa-th-large me-2"></i> Tất cả sản phẩm
+            </a>
+        </li>
+        <li><hr class="dropdown-divider" /></li>
+        @if (Model != null)
         {
-            <li>
-                <a class="dropdown-item" href="@Url.Action("Index", "Home", new { categoryId = item.CategoryID })">
-                    @item.CategoryName
-                </a>
-            </li>
+            foreach (var item in Model)
+            {
+                <li>
+                    <a class="dropdown-item d-flex justify-content-between align-items-center" href="@Url.Action("Index", "Products", new { area = "", categoryId = item.CategoryID })">
+                        <span>@item.CategoryName</span>
+                        <span class="badge bg-light text-secondary ms-2">@(item.Products != null ? item.Products.Count(p => p.Quantity > 0) : 0)</span>
+                    </a>
+                </li>
+            }
         }
     </ul>
-</li>>
+</li>

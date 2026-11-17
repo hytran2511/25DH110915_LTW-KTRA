@@ -1,45 +1,87 @@
-﻿@{
-    ViewBag.Title = "Tổng quan hệ thống";
+﻿@model IEnumerable<_25DH110915_LTW.Models.ViewModel.CategoryStatVM>
+
+@{
+    ViewBag.Title = "Trang thống kê";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h2 class="bg-success">TỔNG QUAN QUẢN TRỊ</h2>
+<h2 style="background-color: #dff0d8; padding: 10px 15px; font-size: 26px; font-weight: 400; color: #333; margin-bottom: 20px;">
+    TRANG THỐNG KÊ HỆ THỐNG (HOME ADMIN)
+</h2>
 
-<!-- Phần hiển thị các con số tổng quan -->
-<div class="row" style="margin-top: 20px;">
-    <div class="col-md-4">
-        <div class="alert alert-info text-center">
-            <h3>@ViewBag.TotalProducts</h3>
-            <p>Tổng Sản Phẩm</p>
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="alert alert-info text-center mb-0 shadow-sm">
+            <h3 class="fw-bold">@ViewBag.TotalProducts</h3>
+            <p class="mb-0 fw-bold">Tổng Hàng Hóa</p>
         </div>
     </div>
-    <div class="col-md-4">
-        <div class="alert alert-success text-center">
-            <h3>@ViewBag.TotalCustomers</h3>
-            <p>Khách Hàng</p>
+    <div class="col-md-3">
+        <div class="alert alert-success text-center mb-0 shadow-sm">
+            <h3 class="fw-bold">@ViewBag.TotalCustomers</h3>
+            <p class="mb-0 fw-bold">Tổng Khách Hàng</p>
         </div>
     </div>
-    <div class="col-md-4">
-        <div class="alert alert-warning text-center">
-            <h3>Đang cập nhật</h3>
-            <p>Tổng Đơn Hàng</p>
+    <div class="col-md-3">
+        <div class="alert alert-warning text-center mb-0 shadow-sm">
+            <h3 class="fw-bold">@ViewBag.TotalOrders</h3>
+            <p class="mb-0 fw-bold">Tổng Đơn Hàng</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="alert alert-danger text-center mb-0 shadow-sm">
+            <h3 class="fw-bold">@String.Format("{0:N0}", ViewBag.TotalRevenue) đ</h3>
+            <p class="mb-0 fw-bold">Tổng Doanh Thu</p>
         </div>
     </div>
 </div>
 
-<hr />
-<h3 class="text-center">THỐNG KÊ SẢN PHẨM THEO DANH MỤC</h3>
+<div class="row mt-4">
+    <div class="col-md-6 mb-4">
+        <h4 class="fw-bold text-dark mb-3">BẢNG THỐNG KÊ HÀNG HÓA THEO DANH MỤC</h4>
+        <table class="table table-bordered table-striped">
+            <thead style="background-color: #dff0d8;">
+                <tr>
+                    <th>Loại hàng</th>
+                    <th class="text-center">Số lượng</th>
+                    <th class="text-end">Giá cao nhất</th>
+                    <th class="text-end">Giá thấp nhất</th>
+                    <th class="text-end">Giá trung bình</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null)
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr style="background-color: #d9edf7;">
+                            <td class="fw-bold">@item.CategoryName</td>
+                            <td class="text-center">@item.ProductCount</td>
+                            <td class="text-end">@String.Format("{0:N0}", item.MaxPrice)</td>
+                            <td class="text-end">@String.Format("{0:N0}", item.MinPrice)</td>
+                            <td class="text-end">@String.Format("{0:N0}", item.AvgPrice)</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-6 mb-4">
+        <h4 class="fw-bold text-dark mb-3 text-center">BIỂU ĐỒ TỶ TRỌNG HÀNG HÓA THEO DANH MỤC</h4>
+        <div id="piechart" data-chart="@Json.Encode(Model)" style="width: 100%; height: 380px;"></div>
+    </div>
+</div>
 
-<div id="piechart" style="width: 100%; height: 500px; display: flex; justify-content: center;"></div>
-
-@section Scripts {
+@section scripts {
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
         google.charts.load('current', { 'packages': ['corechart'] });
         google.charts.setOnLoadCallback(drawChart);
 
         function drawChart() {
-            var rawData = @Html.Raw(Json.Encode(ViewBag.ChartData));
+            var chartEl = document.getElementById('piechart');
+            var rawJson = chartEl ? chartEl.getAttribute('data-chart') : '[]';
+            var rawData = JSON.parse(rawJson || '[]');
             var data = new google.visualization.DataTable();
             data.addColumn('string', 'Danh mục');
             data.addColumn('number', 'Số lượng sản phẩm');
@@ -49,12 +91,12 @@
             }
 
             var options = {
-                title: 'Tỷ trọng sản phẩm theo từng danh mục',
+                title: 'Tỷ lệ hàng hóa theo Danh mục',
                 is3D: true,
                 legend: { position: 'right' }
             };
 
-            var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+            var chart = new google.visualization.PieChart(chartEl);
             chart.draw(data, options);
         }
     </script>

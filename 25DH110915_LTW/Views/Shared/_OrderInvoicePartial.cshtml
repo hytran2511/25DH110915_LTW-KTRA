@@ -1,0 +1,83 @@
+﻿@model _25DH110915_LTW.Models.Order
+
+<style>
+    .order-detail-heading {
+        font-size: 28px;
+        font-weight: 400;
+        color: #333;
+        margin-bottom: 20px;
+        text-transform: uppercase;
+    }
+
+    .order-info-subheading {
+        font-size: 16px;
+        font-weight: 400;
+        color: #444;
+        margin-bottom: 10px;
+        text-align: center;
+        text-transform: uppercase;
+    }
+
+    .order-info-grid {
+        display: grid;
+        grid-template-columns: 165px 1fr;
+        row-gap: 6px;
+        column-gap: 15px;
+        font-size: 14.5px;
+    }
+
+    .order-info-label {
+        font-weight: 700;
+        color: #333;
+        text-align: right;
+    }
+
+    .order-info-value {
+        color: #333;
+        text-align: left;
+    }
+</style>
+
+<div class="invoice-shared-wrapper">
+    <h2 class="order-detail-heading">CHI TIẾT ĐƠN HÀNG</h2>
+
+    <div class="row">
+        <!-- Cột trái: THÔNG TIN ĐƠN HÀNG & KHÁCH HÀNG (Giống giao diện PPT Slide 4) -->
+        <div class="col-md-4 mb-4">
+            <div class="order-info-subheading">THÔNG TIN ĐƠN HÀNG</div>
+            <div class="order-info-grid">
+                <div class="order-info-label">Mã đơn hàng</div>
+                <div class="order-info-value">#@Model.OrderID</div>
+
+                <div class="order-info-label">Ngày đặt hàng</div>
+                <div class="order-info-value">@Model.OrderDate.ToString("M/d/yyyy hh:mm:ss tt")</div>
+
+                <div class="order-info-label">Tên khách hàng</div>
+                <div class="order-info-value">@(Model.Customer != null ? Model.Customer.CustomerName : "")</div>
+
+                <div class="order-info-label">Số điện thoại</div>
+                <div class="order-info-value">@(Model.Customer != null ? Model.Customer.CustomerPhone : "")</div>
+
+                <div class="order-info-label">Tổng giá trị</div>
+                <div class="order-info-value">@Model.TotalAmount.ToString("0.00")</div>
+
+                <div class="order-info-label">Phương thức thanh toán</div>
+                <div class="order-info-value">@Model.PaymentMethod</div>
+
+                <div class="order-info-label">Trạng thái thanh toán</div>
+                <div class="order-info-value">@Model.PaymentStatus</div>
+
+                <div class="order-info-label">Phương thức giao hàng</div>
+                <div class="order-info-value">@Model.DeliveryMethod</div>
+
+                <div class="order-info-label">Địa chỉ giao hàng</div>
+                <div class="order-info-value">@Model.ShippingAddress</div>
+            </div>
+        </div>
+
+        <!-- Cột phải: DANH SÁCH CHI TIẾT ĐƠN HÀNG (Nhúng Partial View _OrderDetailList) -->
+        <div class="col-md-8">
+            @Html.Partial("~/Areas/Admin/Views/Orders/_OrderDetailList.cshtml", Model.OrderDetails)
+        </div>
+    </div>
+</div>

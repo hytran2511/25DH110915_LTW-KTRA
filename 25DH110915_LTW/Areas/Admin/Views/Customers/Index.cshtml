@@ -5,30 +5,33 @@
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h2 class="bg-success">DANH SÁCH KHÁCH HÀNG</h2>
+<h2 style="background-color: #dff0d8; padding: 10px 15px; font-size: 26px; font-weight: 400; color: #333; margin-bottom: 15px;">
+    DANH SÁCH KHÁCH HÀNG
+</h2>
 
-<table class="table table-bordered table-striped">
-    <thead>
-        <tr class="bg-success">
+<!-- Trang Index lưu giữ danh sách khách hàng, không có nút Thêm/Sửa/Xóa (chỉ có xem Chi tiết) -->
+<table class="table table-bordered table-striped align-middle">
+    <thead style="background-color: #dff0d8; color: #333;">
+        <tr>
             <th>Tên khách hàng</th>
             <th>Số điện thoại</th>
             <th>Email</th>
             <th>Địa chỉ</th>
-            <th>Tài khoản</th>
-            <th></th>
+            <th>Tài khoản (Username)</th>
+            <th class="text-center" style="width: 140px;"></th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>@Html.DisplayFor(modelItem => item.CustomerName)</td>
+            <tr style="background-color: #d9edf7;">
+                <td class="fw-bold">@Html.DisplayFor(modelItem => item.CustomerName)</td>
                 <td>@Html.DisplayFor(modelItem => item.CustomerPhone)</td>
                 <td>@Html.DisplayFor(modelItem => item.CustomerEmail)</td>
                 <td>@Html.DisplayFor(modelItem => item.CustomerAddress)</td>
                 <td>@Html.DisplayFor(modelItem => item.Username)</td>
-                <td>
-                    @Html.ActionLink("Chi tiết", "Details", new { id = item.CustomerID }, new { @class = "btn btn-info btn-sm" })
+                <td class="text-center">
+                    @Html.ActionLink("Chi tiết", "Details", new { id = item.CustomerID }, new { @class = "text-primary text-decoration-none fw-bold" })
                 </td>
             </tr>
         }

@@ -1,43 +1,48 @@
 ﻿@model _25DH110915_LTW.Models.User
 
 @{
-    ViewBag.Title = "Chỉnh sửa Tài khoản";
+    ViewBag.Title = "Chỉnh sửa Người quản trị";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<div class="card mt-4" style="max-width: 600px; margin: 0 auto; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-    <div class="card-header bg-warning text-dark text-center" style="font-size: 1.25rem; font-weight: bold;">
-        CHỈNH SỬA TÀI KHOẢN: @Model.Username
+<h2 style="background-color: #dff0d8; padding: 10px 15px; font-size: 26px; font-weight: 400; color: #333; margin-bottom: 20px;">
+    CHỈNH SỬA TÀI KHOẢN QUẢN TRỊ: @Model.Username
+</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal" style="max-width: 600px; background: #f9f9f9; padding: 24px; border-radius: 8px; border: 1px solid #ddd;">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.Username)
+
+        <div class="mb-3">
+            <label class="form-label fw-bold">Tên đăng nhập</label>
+            <input type="text" class="form-control bg-light" value="@Model.Username" disabled />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-bold">Mật khẩu <span class="text-danger">*</span></label>
+            @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control", type = "password" } })
+            @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger small" })
+        </div>
+
+        <div class="mb-4">
+            <label class="form-label fw-bold">Vai trò <span class="text-danger">*</span></label>
+            <select name="UserRole" class="form-select">
+                <option value="Admin" selected>Admin (Người quản trị)</option>
+            </select>
+            @Html.ValidationMessageFor(model => model.UserRole, "", new { @class = "text-danger small" })
+        </div>
+
+        <div>
+            <button type="submit" class="btn btn-warning px-4 fw-bold">Lưu Thay Đổi</button>
+            @Html.ActionLink("Quay lại danh sách", "Index", null, new { @class = "btn btn-secondary ms-2" })
+        </div>
     </div>
-    <div class="card-body" style="padding: 2rem;">
-        @using (Html.BeginForm())
-        {
-            @Html.AntiForgeryToken()
+}
 
-            <div class="form-horizontal">
-                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                @Html.HiddenFor(model => model.Username)
-
-                <div class="form-group mb-3">
-                    <label class="control-label fw-bold">Mật khẩu mới</label>
-                    @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control", type = "password" } })
-                    @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
-                </div>
-
-                <div class="form-group mb-4">
-                    <label class="control-label fw-bold">Vai trò</label>
-                    <select name="UserRole" class="form-select form-control">
-                        <option value="Admin" @(Model.UserRole == "Admin" ? "selected" : "")>Admin (Quản trị viên)</option>
-                        <option value="Customer" @(Model.UserRole == "Customer" ? "selected" : "")>Customer (Khách hàng)</option>
-                    </select>
-                    @Html.ValidationMessageFor(model => model.UserRole, "", new { @class = "text-danger" })
-                </div>
-
-                <div class="form-group text-center">
-                    <button type="submit" class="btn btn-warning px-4 fw-bold">Lưu Thay Đổi</button>
-                    @Html.ActionLink("Quay lại", "Index", null, new { @class = "btn btn-outline-secondary ms-2" })
-                </div>
-            </div>
-        }
-    </div>
-</div>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

@@ -1,33 +1,39 @@
 ﻿@model IEnumerable<_25DH110915_LTW.Models.Order>
 
 <table class="table table-bordered table-striped mt-3">
-    <thead class="bg-primary text-white">
+    <thead style="background-color: #dff0d8; color: #333;">
         <tr>
             <th class="text-center">Mã Đơn</th>
-            <th>Ngày đặt</th>
-            <th>Tổng tiền</th>
-            <th>Trạng thái TT</th>
-            <th>Giao hàng</th>
+            <th>Ngày đặt hàng</th>
+            <th>Tổng giá trị</th>
+            <th>Trạng thái thanh toán</th>
+            <th>Phương thức giao hàng</th>
+            <th>Địa chỉ giao hàng</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
         @if (Model != null && Model.Any())
         {
-            foreach (var item in Model)
+            foreach (var item in Model.OrderByDescending(o => o.OrderDate))
             {
-                <tr>
-                    <td class="text-center font-weight-bold">#@item.OrderID</td>
-                    <td>@String.Format("{0:dd/MM/yyyy HH:mm}", item.OrderDate)</td>
-                    <td class="text-danger font-weight-bold">@item.TotalAmount.ToString("N0") đ</td>
+                <tr style="background-color: #d9edf7;">
+                    <td class="text-center fw-bold">#@item.OrderID</td>
+                    <td>@item.OrderDate.ToString("dd/MM/yyyy")</td>
+                    <td class="text-danger fw-bold">@item.TotalAmount.ToString("N0") VNĐ</td>
                     <td>@item.PaymentStatus</td>
                     <td>@item.DeliveryMethod</td>
+                    <td>@item.ShippingAddress</td>
+                    <td class="text-center">
+                        @Html.ActionLink("Chi tiết đơn hàng", "DetailedOrder", "Orders", new { area = "Admin", id = item.OrderID }, new { @class = "text-primary" })
+                    </td>
                 </tr>
             }
         }
         else
         {
             <tr>
-                <td colspan="5" class="text-center text-muted">Khách hàng này chưa có đơn hàng nào.</td>
+                <td colspan="7" class="text-center text-muted py-3">Khách hàng này chưa có đơn hàng nào.</td>
             </tr>
         }
     </tbody>

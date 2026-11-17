@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using _25DH110915_LTW.Models; 
+using _25DH110915_LTW.Models;
+using _25DH110915_LTW.Models.ViewModel;
 
 namespace _25DH110915_LTW.Areas.Admin.Controllers
 {
@@ -11,25 +12,25 @@ namespace _25DH110915_LTW.Areas.Admin.Controllers
     {
         private MyStoreEntities db = new MyStoreEntities();
 
-        // GET: Admin/Home
+        // GET: Admin/Home (Trang thống kê)
         public ActionResult Index()
         {
-            // 1. Lấy dữ liệu thống kê cơ bản hiển thị trên các thẻ (Card)
             ViewBag.TotalProducts = db.Products.Count();
             ViewBag.TotalCustomers = db.Customers.Count();
+            ViewBag.TotalOrders = db.Orders.Count();
+            ViewBag.TotalRevenue = db.Orders.Sum(o => (decimal?)o.TotalAmount) ?? 0;
 
-            // 2. Chuẩn bị dữ liệu cho biểu đồ Google Chart (Thống kê số lượng SP theo Danh mục)
-            // Lấy tên danh mục và đếm số sản phẩm bên trong danh mục đó
-            var chartData = db.Categories.Select(c => new
+            var chartData = db.Categories.Select(c => new CategoryStatVM
             {
                 CategoryName = c.CategoryName,
-                ProductCount = c.Products.Count
+                ProductCount = c.Products.Count,
+                MaxPrice = c.Products.Max(p => (decimal?)p.ProductPrice) ?? 0,
+                MinPrice = c.Products.Min(p => (decimal?)p.ProductPrice) ?? 0,
+                AvgPrice = c.Products.Average(p => (decimal?)p.ProductPrice) ?? 0
             }).ToList();
 
-            // Truyền dữ liệu dạng List sang View để vẽ biểu đồ
             ViewBag.ChartData = chartData;
-
-            return View();
+            return View(chartData);
         }
     }
 }

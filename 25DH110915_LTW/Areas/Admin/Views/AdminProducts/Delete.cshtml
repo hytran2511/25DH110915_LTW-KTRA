@@ -3,30 +3,43 @@
 @{
     ViewBag.Title = "Xóa Sản phẩm";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+    string imgSrc = Model != null && !string.IsNullOrEmpty(Model.ProductImage)
+        ? (Model.ProductImage.StartsWith("http") || Model.ProductImage.StartsWith("/") || Model.ProductImage.StartsWith("~")
+            ? Url.Content(Model.ProductImage)
+            : Url.Content("~/Images/" + Model.ProductImage))
+        : "https://via.placeholder.com/100?text=No+Image";
 }
 
-<div class="card mt-4 border-danger" style="max-width: 700px; margin: 0 auto; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+<div class="card mt-4 border-danger" style="max-width: 720px; margin: 0 auto; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
     <div class="card-header bg-danger text-white text-center" style="font-size: 1.25rem; font-weight: bold; text-transform: uppercase;">
-        <i class="fa fa-exclamation-triangle"></i> XÁC NHẬN XÓA SẢN PHẨM
+        <i class="fa fa-exclamation-triangle"></i> XÁC NHẬN XÓA HÀNG HÓA
     </div>
-    <div class="card-body text-center" style="padding: 2rem;">
-        <h4 class="text-danger mb-4 fw-bold">Bạn có chắc chắn muốn xóa vĩnh viễn sản phẩm này?</h4>
+    <div class="card-body text-center p-4">
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger fw-bold">
+                <i class="fa fa-ban me-1"></i> @TempData["ErrorMessage"]
+            </div>
+        }
+
+        <h5 class="text-danger mb-4 fw-bold">Bạn có chắc chắn muốn xóa sản phẩm này không?</h5>
 
         <div class="d-flex justify-content-center align-items-center mb-4 text-start bg-light p-3 rounded border">
-            <img src="@Model.ProductImage" alt="Hình ảnh" class="rounded me-4 shadow-sm" style="width: 100px; height: 100px; object-fit: cover;" onerror="this.style.display='none'" />
+            <img src="@imgSrc" alt="@Model.ProductName" class="rounded me-4 shadow-sm" style="width: 100px; height: 100px; object-fit: contain;" onerror="this.src='https://via.placeholder.com/100?text=No+Image'" />
             <div>
                 <h5 class="fw-bold mb-1">@Html.DisplayFor(model => model.ProductName)</h5>
-                <p class="mb-0 text-muted"><strong>Danh mục:</strong> @Html.DisplayFor(model => model.CategoryID)</p>
-                <p class="mb-0 text-success fw-bold"><strong>Giá:</strong> @String.Format("{0:N0}", Model.ProductPrice) VNĐ</p>
+                <p class="mb-1 text-muted"><strong>Chủng loại:</strong> @(Model.Category != null ? Model.Category.CategoryName : ("#" + Model.CategoryID))</p>
+                <p class="mb-1 text-muted"><strong>Số lượng tồn:</strong> @Model.Quantity</p>
+                <p class="mb-0 text-danger fw-bold"><strong>Đơn giá:</strong> @String.Format("{0:N0}", Model.ProductPrice) VNĐ</p>
             </div>
         </div>
 
         @using (Html.BeginForm())
         {
             @Html.AntiForgeryToken()
-            <div class="mt-4 border-top pt-4">
-                <button type="submit" class="btn btn-danger px-5 fw-bold"><i class="fa fa-trash"></i> Xóa Vĩnh Viễn</button>
-                @Html.ActionLink("Hủy bỏ", "Index", null, new { @class = "btn btn-outline-secondary ms-2" })
+            <div class="mt-4 border-top pt-3">
+                <button type="submit" class="btn btn-danger px-5 fw-bold"><i class="fa fa-trash"></i> Xác nhận Xóa</button>
+                @Html.ActionLink("Quay lại danh sách", "Index", null, new { @class = "btn btn-outline-secondary ms-2" })
             </div>
         }
     </div>

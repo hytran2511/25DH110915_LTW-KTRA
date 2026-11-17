@@ -9,6 +9,15 @@ namespace _25DH110915_LTW.Models.ViewModel
         public List<CartItem> CartItems { get; set; }
         public int CustomerID { get; set; }
 
+        [Display(Name = "Họ tên người nhận")]
+        public string CustomerName { get; set; }
+
+        [Display(Name = "Số điện thoại")]
+        public string CustomerPhone { get; set; }
+
+        [Display(Name = "Email")]
+        public string CustomerEmail { get; set; }
+
         [Display(Name = "Ngày đặt hàng")]
         public DateTime OrderDate { get; set; }
 

@@ -1,0 +1,57 @@
+﻿@model _25DH110915_LTW.Models.Order
+
+@{
+    ViewBag.Title = "Cập nhật trạng thái đơn hàng";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2 style="background-color: #dff0d8; padding: 10px 15px; font-size: 26px; font-weight: 400; color: #333;">
+    CẬP NHẬT TRẠNG THÁI ĐƠN HÀNG #@Model.OrderID
+</h2>
+
+<div class="card shadow-sm border-0 mt-3" style="max-width: 650px;">
+    <div class="card-body p-4">
+        <div class="mb-3">
+            <strong>Khách hàng:</strong> @(Model.Customer != null ? Model.Customer.CustomerName : "")
+        </div>
+        <div class="mb-3">
+            <strong>Ngày đặt hàng:</strong> @Model.OrderDate.ToString("dd/MM/yyyy")
+        </div>
+        <div class="mb-3">
+            <strong>Tổng giá trị:</strong> <span class="text-danger fw-bold">@Model.TotalAmount.ToString("N0") VNĐ</span>
+        </div>
+
+        @using (Html.BeginForm("UpdateStatus", "Orders", new { area = "Admin" }, FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            @Html.Hidden("id", Model.OrderID)
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Trạng thái đơn hàng / thanh toán</label>
+                <select name="PaymentStatus" class="form-select">
+                    <option value="Chưa thanh toán" selected="@(Model.PaymentStatus == "Chưa thanh toán" ? "selected" : null)">Chưa thanh toán</option>
+                    <option value="Chờ thanh toán" selected="@(Model.PaymentStatus == "Chờ thanh toán" ? "selected" : null)">Chờ thanh toán</option>
+                    <option value="Thanh toán tiền mặt" selected="@(Model.PaymentStatus == "Thanh toán tiền mặt" ? "selected" : null)">Thanh toán tiền mặt</option>
+                    <option value="Thanh toán paypal" selected="@(Model.PaymentStatus == "Thanh toán paypal" ? "selected" : null)">Thanh toán paypal</option>
+                    <option value="Đang xử lý" selected="@(Model.PaymentStatus == "Đang xử lý" ? "selected" : null)">Đang xử lý</option>
+                    <option value="Đang vận chuyển" selected="@(Model.PaymentStatus == "Đang vận chuyển" ? "selected" : null)">Đang vận chuyển</option>
+                    <option value="Đã giao" selected="@(Model.PaymentStatus == "Đã giao" ? "selected" : null)">Đã giao</option>
+                    <option value="Đã hủy" selected="@(Model.PaymentStatus == "Đã hủy" ? "selected" : null)">Đã hủy</option>
+                </select>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label fw-bold">Phương thức giao hàng</label>
+                <select name="DeliveryMethod" class="form-select">
+                    <option value="Giao hàng nhanh" selected="@(Model.DeliveryMethod == "Giao hàng nhanh" ? "selected" : null)">Giao hàng nhanh</option>
+                    <option value="Giao hàng tiết kiệm" selected="@(Model.DeliveryMethod == "Giao hàng tiết kiệm" ? "selected" : null)">Giao hàng tiết kiệm</option>
+                </select>
+            </div>
+
+            <div>
+                <button type="submit" class="btn btn-primary px-4" style="background-color: #337ab7; border-color: #2e6da4;">Lưu cập nhật</button>
+                <a href="@Url.Action("DetailedOrder", "Orders", new { area = "Admin", id = Model.OrderID })" class="btn btn-secondary ms-2">Quay lại chi tiết</a>
+            </div>
+        }
+    </div>
+</div>

@@ -7,12 +7,21 @@
     <div class="col-md-5">
         <div class="card shadow-sm border-0">
             <div class="card-header bg-primary text-white text-center py-3">
-                <h4 class="mb-0 fw-bold">ĐĂNG NHẬP KHÁCH HÀNG</h4>
+                <h4 class="mb-0 fw-bold"><i class="fa fa-sign-in-alt me-2"></i>ĐĂNG NHẬP HỆ THỐNG</h4>
             </div>
             <div class="card-body p-4">
-                @if (ViewBag.ErrorLogin != null)
+                @if (TempData["RegisterSuccess"] != null)
                 {
-                    <div class="alert alert-danger">@ViewBag.ErrorLogin</div>
+                    <div class="alert alert-success">
+                        <i class="fa fa-check-circle me-1"></i> @TempData["RegisterSuccess"]
+                    </div>
+                }
+
+                @if (ViewBag.Error != null || ViewBag.ErrorLogin != null)
+                {
+                    <div class="alert alert-danger">
+                        <i class="fa fa-exclamation-circle me-1"></i> @(ViewBag.Error ?? ViewBag.ErrorLogin)
+                    </div>
                 }
 
                 @using (Html.BeginForm("Login", "Account", FormMethod.Post))
@@ -29,7 +38,7 @@
                     <button type="submit" class="btn btn-primary w-100 fw-bold py-2">Đăng Nhập</button>
                 }
                 <div class="text-center mt-3">
-                    Chưa có tài khoản? <a href="@Url.Action("Register", "Account")" class="text-decoration-none">Đăng ký ngay</a>
+                    Chưa có tài khoản? <a href="@Url.Action("Register", "Account")" class="text-decoration-none fw-bold">Đăng ký ngay</a>
                 </div>
             </div>
         </div>

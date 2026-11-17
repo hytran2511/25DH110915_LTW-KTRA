@@ -15,40 +15,35 @@ namespace _25DH110915_LTW.Areas.Admin.Controllers
         private MyStoreEntities db = new MyStoreEntities();
 
         // GET: Admin/Categories
-        // GET: lấy dữ lieu từ bảng Categories trong DB để hiển thị lên
         public ActionResult Index()
         {
-            return View(db.Categories.ToList());
+            var categories = db.Categories.Include(c => c.Products).ToList();
+            return View(categories);
         }
 
-        // GET: Admin/Categories/Details/5
-        // Details lấy chi tiết của một bản ghi CategoryID = id
+        // GET: Admin/Categories/Details/5 (Chứa Danh sách sản phẩm liên quan thuộc danh mục)
         public ActionResult Details(int? id)
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest); // mã lỗi 400 - Bad Request
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Category category = db.Categories.Find(id);
-            if (category == null) // không tìm thấy bản ghi nào
+            Category category = db.Categories.Include(c => c.Products).SingleOrDefault(c => c.CategoryID == id);
+            if (category == null)
             {
-                return HttpNotFound(); // mã lỗi 404 - Not Found
+                return HttpNotFound();
             }
             return View(category);
         }
 
         // GET: Admin/Categories/Create
-        // load form Create
-        [HttpGet] // là phương thức GET, mặc định là GET nên có thể bỏ qua
+        [HttpGet]
         public ActionResult Create()
         {
             return View();
         }
 
         // POST: Admin/Categories/Create
-        // Post: lưu dữ liệu từ form Create vào DB
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "CategoryID,CategoryName")] Category category)
@@ -57,6 +52,7 @@ namespace _25DH110915_LTW.Areas.Admin.Controllers
             {
                 db.Categories.Add(category);
                 db.SaveChanges();
+                TempData["SuccessMessage"] = "Đã thêm danh mục mới thành công.";
                 return RedirectToAction("Index");
             }
 
@@ -64,7 +60,6 @@ namespace _25DH110915_LTW.Areas.Admin.Controllers
         }
 
         // GET: Admin/Categories/Edit/5
-        // Edit: lấy dữ liệu của một danh mục đã có sao cho CategoryID = id để hiển thị lên form Edit
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -80,8 +75,6 @@ namespace _25DH110915_LTW.Areas.Admin.Controllers
         }
 
         // POST: Admin/Categories/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "CategoryID,CategoryName")] Category category)
@@ -90,6 +83,7 @@ namespace _25DH110915_LTW.Areas.Admin.Controllers
             {
                 db.Entry(category).State = EntityState.Modified;
                 db.SaveChanges();
+                TempData["SuccessMessage"] = "Cập nhật danh mục thành công.";
                 return RedirectToAction("Index");
             }
             return View(category);
@@ -102,7 +96,7 @@ namespace _25DH110915_LTW.Areas.Admin.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Category category = db.Categories.Find(id);
+            Category category = db.Categories.Include(c => c.Products).SingleOrDefault(c => c.CategoryID == id);
             if (category == null)
             {
                 return HttpNotFound();
@@ -115,7 +109,7 @@ namespace _25DH110915_LTW.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Category category = db.Categories.Find(id);
+            Category category = db.Categories.Include(c => c.Products).SingleOrDefault(c => c.CategoryID == id);
             if (category == null)
             {
                 return HttpNotFound();
@@ -126,13 +120,10 @@ namespace _25DH110915_LTW.Areas.Admin.Controllers
 
             if (productsInCategory.Count > 0)
             {
-                // Có sản phẩm -> Báo lỗi, không cho xóa
-                // Bạn có thể dùng ViewBag hoặc TempData để truyền thông báo lỗi sang View
-                TempData["ErrorMessage"] = "Không thể xóa Danh mục này vì đang có " + productsInCategory.Count + " sản phẩm thuộc danh mục. Vui lòng xóa hoặc di chuyển các sản phẩm trước.";
+                TempData["ErrorMessage"] = "Không thể xóa Danh mục '" + category.CategoryName + "' vì đang có " + productsInCategory.Count + " hàng hóa thuộc danh mục này!";
                 return RedirectToAction("Delete", new { id = category.CategoryID });
             }
 
-            // Không có sản phẩm -> Tiến hành xóa
             db.Categories.Remove(category);
             db.SaveChanges();
             TempData["SuccessMessage"] = "Đã xóa Danh mục thành công.";

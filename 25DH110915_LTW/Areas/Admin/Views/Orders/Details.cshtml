@@ -5,77 +5,21 @@
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<!-- CSS format giống hóa đơn -->
-<style>
-    .invoice-box {
-        max-width: 900px;
-        margin: auto;
-        padding: 30px;
-        border: 1px solid #eee;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
-        font-size: 16px;
-        line-height: 24px;
-        background-color: #fff;
-    }
-
-    .invoice-title {
-        font-size: 24px;
-        font-weight: bold;
-        color: #333;
-        margin-bottom: 20px;
-        text-transform: uppercase;
-    }
-
-    .info-label {
-        font-weight: bold;
-        width: 180px;
-        display: inline-block;
-    }
-</style>
-
-<div class="invoice-box">
-    <div class="row">
-        <div class="col-md-12 text-center">
-            <h2 class="invoice-title">HÓA ĐƠN CHI TIẾT ĐƠN HÀNG</h2>
-            <p>Mã đơn hàng: <strong>#@Model.OrderID</strong></p>
-        </div>
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fa fa-check-circle me-1"></i> @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
-    <hr />
+}
 
-    <div class="row" style="margin-bottom: 20px;">
-        <div class="col-md-6">
-            <h4 style="border-bottom: 2px solid #ccc; padding-bottom: 5px;">THÔNG TIN KHÁCH HÀNG</h4>
-            <p><span class="info-label">Tên khách hàng:</span> @Model.Customer.CustomerName</p>
-            <p><span class="info-label">Số điện thoại:</span> @Model.Customer.CustomerPhone</p>
-            <p><span class="info-label">Địa chỉ giao hàng:</span>@Model.AddressDelivery</p>
-        </div>
-        <div class="col-md-6">
-            <h4 style="border-bottom: 2px solid #ccc; padding-bottom: 5px;">THÔNG TIN ĐƠN HÀNG</h4>
-            <p><span class="info-label">Ngày đặt hàng:</span> @String.Format("{0:dd/MM/yyyy HH:mm}", Model.OrderDate)</p>
-            <p><span class="info-label">Trạng thái:</span> <span class="badge bg-warning text-dark">@Model.PaymentStatus</span></p>
-            <p><span class="info-label">Phương thức giao hàng:</span> @Model.DeliveryMethod</p>
-        </div>
-    </div>
+@Html.Partial("~/Views/Shared/_OrderInvoicePartial.cshtml", Model)
 
-    <!-- Nhúng Partial View Chi tiết sản phẩm -->
-    <div class="row">
-        <div class="col-md-12">
-            <h4 style="border-bottom: 2px solid #ccc; padding-bottom: 5px;">DANH SÁCH SẢN PHẨM</h4>
-            @Html.Partial("_OrderDetailList", Model.OrderDetails)
-        </div>
-    </div>
-
-    <div class="row text-right" style="margin-top: 20px;">
-        <div class="col-md-12">
-            <h3>Tổng thanh toán: <span style="color:red;">@Model.TotalAmount.ToString("N0") VNĐ</span></h3>
-        </div>
-    </div>
-
-    <div class="row" style="margin-top: 30px;">
-        <div class="col-md-12 text-center">
-            <!-- Nút Cập nhật trạng thái và Quay lại -->
-            <a href="#" class="btn btn-primary btn-lg">Cập nhật trạng thái</a>
-            <a href="@Url.Action("Index")" class="btn btn-secondary btn-lg">Quay lại danh sách</a>
-        </div>
-    </div>
+<div class="mt-4 mb-3">
+    <a href="@Url.Action("UpdateStatus", "Orders", new { area = "Admin", id = Model.OrderID })" class="btn btn-primary me-1" style="background-color: #337ab7; border-color: #2e6da4;">
+        Cập nhật trạng thái
+    </a>
+    <a href="@Url.Action("Index", "Orders", new { area = "Admin" })" class="btn btn-primary" style="background-color: #337ab7; border-color: #2e6da4;">
+        Quay lại danh sách
+    </a>
 </div>

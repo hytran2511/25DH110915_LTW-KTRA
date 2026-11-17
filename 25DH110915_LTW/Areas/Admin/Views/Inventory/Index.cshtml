@@ -2,74 +2,28 @@
     ViewBag.Title = "Quản lý Kho Hàng";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 
-    // Nhận dữ liệu từ ViewBag
     var inStockList = ViewBag.InStock as List<_25DH110915_LTW.Models.Product>;
     var outOfStockList = ViewBag.OutOfStock as List<_25DH110915_LTW.Models.Product>;
 }
 
-<h2 class="bg-primary text-white" style="padding: 10px;">THỐNG KÊ KHO HÀNG</h2>
+<h2 style="background-color: #dff0d8; padding: 10px 15px; font-size: 26px; font-weight: 400; color: #333;">
+    QUẢN LÝ & THỐNG KÊ KHO HÀNG
+</h2>
 
-<div class="row" style="margin-top: 20px;">
-    <!-- Phần 1: Danh sách Hàng Tồn (Số lượng > 0) -->
-    <div class="col-md-6">
-        <h4 class="text-success font-weight-bold">Danh sách hàng tồn (Còn hàng)</h4>
-        <table class="table table-bordered table-striped">
-            <thead class="bg-success text-white">
-                <tr>
-                    <th>Tên sản phẩm</th>
-                    <th>Hình ảnh</th>
-                    <th class="text-center">Số lượng tồn</th>
-                </tr>
-            </thead>
-            <tbody>
-                @if (inStockList != null && inStockList.Any())
-                {
-                    foreach (var item in inStockList)
-                    {
-                        <tr>
-                            <td>@item.ProductName</td>
-                            <td><img src="@item.ProductImage" style="max-height: 40px;" /></td>
-                            <!-- Nhớ đổi tên cột StockQuantity nếu DB của bạn dùng tên khác -->
-                            <td class="text-center font-weight-bold text-success">@item.Quantity</td>
-                        </tr>
-                    }
-                }
-                else
-                {
-                    <tr><td colspan="3" class="text-center">Không có sản phẩm nào tồn kho.</td></tr>
-                }
-            </tbody>
-        </table>
-    </div>
+<!-- Phần 1: Danh sách hàng cần nhập (Số lượng tồn = 0) -->
+<div class="mt-4 mb-5">
+    <h4 class="text-danger fw-bold mb-3">
+        <i class="fa fa-exclamation-circle me-2"></i>1. Danh sách hàng cần nhập (Số lượng tồn = 0)
+        <span class="badge bg-danger ms-2">@(outOfStockList != null ? outOfStockList.Count : 0) SP</span>
+    </h4>
+    @Html.Partial("_InventoryProductList", outOfStockList)
+</div>
 
-    <!-- Phần 2: Danh sách Hàng Cần Nhập (Số lượng = 0) -->
-    <div class="col-md-6">
-        <h4 class="text-danger font-weight-bold">Danh sách hàng cần nhập (Hết hàng)</h4>
-        <table class="table table-bordered table-striped">
-            <thead class="bg-danger text-white">
-                <tr>
-                    <th>Tên sản phẩm</th>
-                    <th>Hình ảnh</th>
-                    <th class="text-center">Tình trạng</th>
-                </tr>
-            </thead>
-            <tbody>
-                @if (outOfStockList != null && outOfStockList.Any())
-                {
-                    foreach (var item in outOfStockList)
-                    {
-                        <tr>
-                            <td>@item.ProductName</td>
-                            <td><img src="@item.ProductImage" style="max-height: 40px;" /></td>
-                            <td class="text-center text-danger font-weight-bold">Hết hàng</td>
-                        </tr>
-                    }
-                }
-                else
-                {
-                    <tr><td colspan="3" class="text-center">Tất cả sản phẩm đều đang còn hàng!</td></tr>
-                }
-            </tbody>
-        </table>
-    </div>
+<!-- Phần 2: Danh sách hàng tồn (Số lượng tồn > 0) -->
+<div class="mb-4">
+    <h4 class="text-success fw-bold mb-3">
+        <i class="fa fa-boxes me-2"></i>2. Danh sách hàng tồn (Số lượng tồn > 0)
+        <span class="badge bg-success ms-2">@(inStockList != null ? inStockList.Count : 0) SP</span>
+    </h4>
+    @Html.Partial("_InventoryProductList", inStockList)
 </div>

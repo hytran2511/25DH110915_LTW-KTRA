@@ -126,10 +126,10 @@ SET IDENTITY_INSERT [dbo].[Category] OFF
 GO
 SET IDENTITY_INSERT [dbo].[Customer] ON 
 
-INSERT [dbo].[Customer] ([CustomerID], [CustomerName], [CustomerPhone], [CustomerEmail], [CustomerAddress], [Username]) VALUES (1, N'Hồ Gia Nghĩa', N'0909123456', N'nghiahg@gmail.com', N'828 Sư Vạn Hạnh, Quận 10, TP.HCM', N'khachhang1')
+INSERT [dbo].[Customer] ([CustomerID], [CustomerName], [CustomerPhone], [CustomerEmail], [CustomerAddress], [Username]) VALUES (1, N'Trần Gia Hy', N'0909123456', N'giahy@gmail.com', N'828 Sư Vạn Hạnh, Quận 10, TP.HCM', N'khachhang1')
 INSERT [dbo].[Customer] ([CustomerID], [CustomerName], [CustomerPhone], [CustomerEmail], [CustomerAddress], [Username]) VALUES (2, N'Nguyễn Văn Tèo', N'0912345678', N'teonv@gmail.com', N'123 Nguyễn Trãi, Quận 5, TP.HCM', N'teonv')
 INSERT [dbo].[Customer] ([CustomerID], [CustomerName], [CustomerPhone], [CustomerEmail], [CustomerAddress], [Username]) VALUES (3, N'Phạm Thị Hòa', N'0987654321', N'hoapt@gmail.com', N'45 Lê Lợi, Quận 1, TP.HCM', N'hoapt')
-INSERT [dbo].[Customer] ([CustomerID], [CustomerName], [CustomerPhone], [CustomerEmail], [CustomerAddress], [Username]) VALUES (4, N'Hồ Gia Nghĩa', N'1234567', N'nghiahg@gmail.com', N'abc', N'Nghia123')
+INSERT [dbo].[Customer] ([CustomerID], [CustomerName], [CustomerPhone], [CustomerEmail], [CustomerAddress], [Username]) VALUES (4, N'Trần Gia Hy', N'1234567', N'giahy@gmail.com', N'abc', N'Nghia123')
 SET IDENTITY_INSERT [dbo].[Customer] OFF
 GO
 SET IDENTITY_INSERT [dbo].[Order] ON 
@@ -209,3 +209,4 @@ USE [master]
 GO
 ALTER DATABASE [MyStore] SET  READ_WRITE 
 GO
+

@@ -1,33 +1,44 @@
 ﻿@model IEnumerable<_25DH110915_LTW.Models.User>
 
 @{
-    ViewBag.Title = "Quản lý Tài khoản Admin";
+    ViewBag.Title = "Quản lý Người dùng (Quản trị viên)";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h2 class="bg-success text-white" style="padding: 10px; margin-bottom: 20px;">QUẢN LÝ TÀI KHOẢN ADMIN</h2>
+<h2 style="background-color: #dff0d8; padding: 10px 15px; font-size: 26px; font-weight: 400; color: #333; margin-bottom: 15px;">
+    DANH SÁCH TÀI KHOẢN NGƯỜI QUẢN TRỊ
+</h2>
 
-<p style="margin-bottom: 15px;">
-    @Html.ActionLink("Thêm mới Admin", "Create", null, new { @class = "btn btn-primary" })
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+<p class="mb-3">
+    @Html.ActionLink("Thêm mới người quản trị", "Create", null, new { @class = "btn btn-primary" })
 </p>
 
-<table class="table table-bordered table-striped table-hover">
-    <thead class="bg-info text-white">
+<!-- Bảng User có < 5 cột nên bỏ chức năng Detail theo đúng Barem Excel -->
+<table class="table table-bordered table-striped table-hover align-middle">
+    <thead style="background-color: #dff0d8; color: #333;">
         <tr>
             <th>Tên đăng nhập (Username)</th>
             <th>Vai trò (Role)</th>
-            <th class="text-center" style="width: 250px;">Thao tác</th>
+            <th class="text-center" style="width: 220px;">Thao tác</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td style="vertical-align: middle;"><strong>@item.Username</strong></td>
-                <td style="vertical-align: middle;">@item.UserRole</td>
-                <td class="text-center" style="vertical-align: middle;">
-                    @Html.ActionLink("Sửa", "Edit", new { id = item.Username }, new { @class = "btn btn-warning btn-sm" })
-                    @Html.ActionLink("Chi tiết", "Details", new { id = item.Username }, new { @class = "btn btn-info btn-sm" })
+            <tr style="background-color: #d9edf7;">
+                <td><strong>@item.Username</strong></td>
+                <td>@item.UserRole</td>
+                <td class="text-center">
+                    @Html.ActionLink("Sửa", "Edit", new { id = item.Username }, new { @class = "btn btn-warning btn-sm me-1" })
                     @Html.ActionLink("Xóa", "Delete", new { id = item.Username }, new { @class = "btn btn-danger btn-sm" })
                 </td>
             </tr>

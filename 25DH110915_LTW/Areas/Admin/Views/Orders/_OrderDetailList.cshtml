@@ -1,30 +1,41 @@
 ﻿@model IEnumerable<_25DH110915_LTW.Models.OrderDetail>
 
-<table class="table table-bordered">
+<table class="table" style="border-top: 1px solid #ddd;">
     <thead>
-        <tr style="background-color: #f8f9fa;">
-            <th>Hình ảnh</th>
-            <th>Sản phẩm</th>
-            <th class="text-center">Số lượng</th>
-            <th class="text-right">Đơn giá</th>
-            <th class="text-right">Thành tiền</th>
+        <tr style="border-bottom: 2px solid #ddd;">
+            <th colspan="2" style="font-weight: bold;">Sản phẩm</th>
+            <th style="width: 100px; font-weight: bold;">Số lượng</th>
+            <th style="width: 110px; font-weight: bold;">Đơn giá</th>
+            <th style="width: 120px; font-weight: bold;">Thành tiền</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @if (Model != null)
         {
-            <tr>
-                <td style="width: 80px;">
-                    <img src="@item.Product.ProductImage" style="max-height: 50px;" />
-                </td>
-                <td>@item.Product.ProductName</td>
-                <td class="text-center">@item.Quantity</td>
-                <td class="text-right">@item.UnitPrice.ToString("N0")</td>
-                <!-- Tính thành tiền từng dòng -->
-                <td class="text-right font-weight-bold text-danger">
-                    @((item.Quantity * item.UnitPrice).ToString("N0"))
-                </td>
-            </tr>
+            foreach (var item in Model)
+            {
+                string imgSrc = item.Product != null && !string.IsNullOrEmpty(item.Product.ProductImage)
+                    ? (item.Product.ProductImage.StartsWith("http") || item.Product.ProductImage.StartsWith("/") || item.Product.ProductImage.StartsWith("~")
+                        ? Url.Content(item.Product.ProductImage)
+                        : Url.Content("~/Images/" + item.Product.ProductImage))
+                    : "https://via.placeholder.com/120x160?text=No+Image";
+                decimal lineTotal = item.TotalPrice ?? (item.Quantity * item.UnitPrice);
+                <tr style="border-bottom: 1px solid #ddd;">
+                    <td style="width: 160px; padding: 15px 10px;">
+                        <a href="@Url.Action("Details", "Products", new { area = "", id = item.ProductID })">
+                            <img src="@imgSrc" alt="@(item.Product != null ? item.Product.ProductName : "")" style="width: 130px; max-height: 180px; object-fit: contain;" onerror="this.src='https://via.placeholder.com/120x160?text=No+Image'" />
+                        </a>
+                    </td>
+                    <td style="padding: 15px 10px; vertical-align: top;">
+                        <a href="@Url.Action("Details", "Products", new { area = "", id = item.ProductID })" style="color: #333; text-decoration: none; font-size: 15px;">
+                            @(item.Product != null ? item.Product.ProductName : ("SP #" + item.ProductID))
+                        </a>
+                    </td>
+                    <td style="padding: 15px 10px; vertical-align: top;">@item.Quantity</td>
+                    <td style="padding: 15px 10px; vertical-align: top;">@item.UnitPrice.ToString("N0")</td>
+                    <td style="padding: 15px 10px; vertical-align: top;">@lineTotal.ToString("N0")</td>
+                </tr>
+            }
         }
     </tbody>
 </table>

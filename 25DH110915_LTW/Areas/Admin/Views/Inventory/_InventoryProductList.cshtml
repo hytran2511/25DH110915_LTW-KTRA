@@ -1,0 +1,56 @@
+﻿@model IEnumerable<_25DH110915_LTW.Models.Product>
+
+<table class="table table-bordered table-striped align-middle">
+    <thead style="background-color: #dff0d8; color: #333;">
+        <tr>
+            <th class="text-center" style="width: 85px;">Hình ảnh</th>
+            <th>Tên hàng hóa</th>
+            <th>Chủng loại</th>
+            <th class="text-end">Đơn giá</th>
+            <th class="text-center">Số lượng tồn</th>
+            <th class="text-center" style="width: 110px;">Thao tác</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            foreach (var item in Model)
+            {
+                string imgSrc = !string.IsNullOrEmpty(item.ProductImage)
+                    ? (item.ProductImage.StartsWith("http") || item.ProductImage.StartsWith("/") || item.ProductImage.StartsWith("~")
+                        ? Url.Content(item.ProductImage)
+                        : Url.Content("~/Images/" + item.ProductImage))
+                    : "https://via.placeholder.com/60?text=No+Image";
+                int qty = item.Quantity ?? 0;
+
+                <tr style="background-color: #d9edf7;">
+                    <td class="text-center">
+                        <img src="@imgSrc" alt="@item.ProductName" style="max-height: 55px; max-width: 55px; object-fit: contain;" onerror="this.src='https://via.placeholder.com/60?text=No+Image'" />
+                    </td>
+                    <td class="fw-bold">@item.ProductName</td>
+                    <td>@(item.Category != null ? item.Category.CategoryName : "")</td>
+                    <td class="text-end text-danger fw-bold">@item.ProductPrice.ToString("N0") đ</td>
+                    <td class="text-center">
+                        @if (qty > 0)
+                        {
+                            <span class="badge bg-success fs-6">@qty</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger">0 (Cần nhập)</span>
+                        }
+                    </td>
+                    <td class="text-center">
+                        @Html.ActionLink(qty > 0 ? "Cập nhật" : "Nhập hàng", "Edit", "AdminProducts", new { area = "Admin", id = item.ProductID }, new { @class = "btn btn-sm " + (qty > 0 ? "btn-primary" : "btn-danger") })
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="6" class="text-center text-muted py-3">Không có hàng hóa nào trong danh sách này.</td>
+            </tr>
+        }
+    </tbody>
+</table>

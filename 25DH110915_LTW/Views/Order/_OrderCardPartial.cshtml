@@ -1,0 +1,101 @@
+﻿@model _25DH110915_LTW.Models.Order
+@using System
+@using System.Collections.Generic
+@using System.Linq
+
+@{
+    var details = Model.OrderDetails != null ? Model.OrderDetails.ToList() : new List<_25DH110915_LTW.Models.OrderDetail>();
+    int firstProductId = details.Any() ? details.First().ProductID : 0;
+    string statusCategory = ViewData["StatusCategory"] as string ?? "Đang xử lý";
+    string prefixId = ViewData["PrefixId"] as string ?? "ord";
+    string cardDomId = prefixId + "_order_" + Model.OrderID;
+    int extraProductCount = details.Count - 2;
+}
+
+<div class="tiki-order-card">
+    <div class="tiki-order-header">
+        <span>
+            @if (statusCategory == "Đã giao")
+            {
+                <i class="fa fa-truck me-2"></i><span>Giao hàng thành công</span>
+            }
+            else if (statusCategory == "Đã hủy")
+            {
+                <i class="fa fa-ban me-2"></i><span>Đã hủy</span>
+            }
+            else if (statusCategory == "Đang vận chuyển")
+            {
+                <i class="fa fa-shipping-fast me-2"></i><span>Đang vận chuyển</span>
+            }
+            else if (statusCategory == "Chờ thanh toán")
+            {
+                <i class="fa fa-clock me-2"></i><span>Chờ thanh toán</span>
+            }
+            else
+            {
+                <i class="fa fa-sync-alt me-2"></i><span>Đang xử lý (@Model.PaymentStatus)</span>
+            }
+        </span>
+        <span class="small fw-normal text-muted">Mã đơn: #@Model.OrderID | @Model.OrderDate.ToString("dd/MM/yyyy")</span>
+    </div>
+
+    <div class="tiki-order-body">
+        @for (int i = 0; i < details.Count; i++)
+        {
+            var item = details[i];
+            string imgSrc = item.Product != null && !string.IsNullOrEmpty(item.Product.ProductImage)
+                ? (item.Product.ProductImage.StartsWith("http") || item.Product.ProductImage.StartsWith("/") || item.Product.ProductImage.StartsWith("~")
+                    ? Url.Content(item.Product.ProductImage)
+                    : Url.Content("~/Images/" + item.Product.ProductImage))
+                : "https://via.placeholder.com/80?text=Book";
+            string sellerName = item.Product != null && item.Product.Category != null
+                ? item.Product.Category.CategoryName
+                : "Nhà sách MyStore";
+            string rowClass = i >= 2 ? ("tiki-product-row d-none extra-item-" + cardDomId) : "tiki-product-row";
+
+            <div class="@rowClass">
+                <div class="tiki-product-left">
+                    <a href="@Url.Action("Details", "Products", new { id = item.ProductID })" class="tiki-thumb-box">
+                        <img src="@imgSrc" alt="@(item.Product != null ? item.Product.ProductName : "")" onerror="this.src='https://via.placeholder.com/80?text=Book'" />
+                        <span class="tiki-qty-badge">x@(item.Quantity)</span>
+                    </a>
+                    <div class="tiki-product-info">
+                        <a href="@Url.Action("Details", "Products", new { id = item.ProductID })" class="product-name">
+                            @(item.Product != null ? item.Product.ProductName : ("Sản phẩm #" + item.ProductID))
+                        </a>
+                        <div class="seller-name">
+                            <i class="fa fa-store"></i>
+                            <span>@sellerName</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="tiki-product-price">
+                    @String.Format("{0:N0}", item.UnitPrice).Replace(",", ".") <u>đ</u>
+                </div>
+            </div>
+        }
+
+        @if (extraProductCount > 0)
+        {
+            <div>
+                <button type="button" class="btn-more-items" data-card-id="@cardDomId" data-extra-count="@extraProductCount" onclick="toggleExtraProducts(this)">
+                    Xem thêm @extraProductCount sản phẩm
+                </button>
+            </div>
+        }
+    </div>
+
+    <div class="tiki-order-footer">
+        <div class="tiki-total-line">
+            Tổng tiền: <span class="total-amount">@String.Format("{0:N0}", Model.TotalAmount).Replace(",", ".") <u>đ</u></span>
+        </div>
+        <div class="tiki-action-btns">
+            <a href="@Url.Action("BuyAgain", "Order", new { id = Model.OrderID })" class="btn-tiki-outline">Mua lại</a>
+            <a href="@Url.Action("OrderDetails", "Order", new { id = Model.OrderID })" class="btn-tiki-outline">Xem chi tiết</a>
+            @if (firstProductId > 0)
+            {
+                <a href="@Url.Action("Details", "Products", new { id = firstProductId })" class="btn-tiki-outline" title="Xem chi tiết sản phẩm">Chi tiết SP</a>
+            }
+        </div>
+    </div>
+</div>

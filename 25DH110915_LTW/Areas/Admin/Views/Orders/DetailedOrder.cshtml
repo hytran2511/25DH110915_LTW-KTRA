@@ -1,0 +1,26 @@
+﻿@model _25DH110915_LTW.Models.Order
+
+@{
+    ViewBag.Title = "Chi tiết đơn hàng";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fa fa-check-circle me-1"></i> @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<!-- Sử dụng Partial View Hóa đơn mua hàng dùng chung cho cả Admin và Customer -->
+@Html.Partial("~/Views/Shared/_OrderInvoicePartial.cshtml", Model)
+
+<div class="mt-4 mb-3">
+    <a href="@Url.Action("UpdateStatus", "Orders", new { area = "Admin", id = Model.OrderID })" class="btn btn-primary me-1" style="background-color: #337ab7; border-color: #2e6da4;">
+        Cập nhật trạng thái
+    </a>
+    <a href="@Url.Action("Index", "Orders", new { area = "Admin" })" class="btn btn-primary" style="background-color: #337ab7; border-color: #2e6da4;">
+        Quay lại danh sách
+    </a>
+</div>
