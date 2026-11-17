@@ -1,0 +1,156 @@
+﻿@model IEnumerable<_25DH110915_LTW.Models.Order>
+
+@{
+    ViewBag.Title = "Đơn hàng của tôi";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5 mb-5">
+    <div class="row">
+        <!-- Sidebar menu tài khoản (Tùy chọn) -->
+        <div class="col-md-3 mb-4">
+            <div class="list-group shadow-sm">
+                <a href="#" class="list-group-item list-group-item-action fw-bold"><i class="fa fa-user-circle me-2"></i> Tài khoản của tôi</a>
+                <a href="@Url.Action("MyOrder", "Order")" class="list-group-item list-group-item-action active" style="background-color: #00bcd4; border-color: #00bcd4;"><i class="fa fa-receipt me-2"></i> Lịch sử mua hàng</a>
+                <a href="@Url.Action("Logout", "Account")" class="list-group-item list-group-item-action text-danger"><i class="fa fa-sign-out-alt me-2"></i> Đăng xuất</a>
+            </div>
+        </div>
+
+        <!-- Nội dung chính: Lịch sử đơn hàng -->
+        <div class="col-md-9">
+            <h3 class="fw-bold mb-3" style="color: #00bcd4;">ĐƠN HÀNG CỦA TÔI</h3>
+
+            <!-- Thanh tìm kiếm đơn hàng -->
+            <div class="input-group mb-4 shadow-sm">
+                <input type="text" class="form-control" placeholder="Tìm đơn hàng theo Mã đơn hàng...">
+                <button class="btn btn-outline-secondary" type="button"><i class="fa fa-search"></i> Tìm kiếm</button>
+            </div>
+
+            <!-- Các Tab Trạng thái đơn hàng  -->
+            <ul class="nav nav-tabs mb-4" id="orderTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link active fw-bold" data-toggle="tab" data-bs-toggle="tab" href="#all" role="tab">Tất cả đơn</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link text-muted" data-toggle="tab" data-bs-toggle="tab" href="#pending" role="tab">Chờ thanh toán</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link text-muted" data-toggle="tab" data-bs-toggle="tab" href="#processing" role="tab">Đang xử lý</a>
+                </li>
+            </ul>
+
+            <!-- Danh sách đơn hàng theo từng Tab -->
+            <div class="tab-content" id="orderTabsContent">
+
+                <!-- TAB 1: TẤT CẢ ĐƠN -->
+                <div class="tab-pane fade show active in" id="all" role="tabpanel">
+                    @if (!Model.Any())
+                    {
+                        <div class="alert alert-warning text-center">Bạn chưa có đơn hàng nào. <a href="@Url.Action("Index", "Home")">Mua sắm ngay</a></div>
+                    }
+                    else
+                    {
+                        foreach (var item in Model)
+                        {
+                            <!-- Gọi hàm Helper ở dưới để vẽ thẻ đơn hàng, tránh lặp code -->
+                            @RenderOrderCard(item)
+                        }
+                    }
+                </div>
+
+                <!-- TAB 2: CHỜ THANH TOÁN -->
+                <div class="tab-pane fade" id="pending" role="tabpanel">
+                    @{ var pendingOrders = Model.Where(o => o.PaymentStatus == "Chưa thanh toán"); }
+                    @if (!pendingOrders.Any())
+                    {<p class="text-center mt-3">Không có đơn hàng nào.</p> }
+                    else
+                    {
+                        foreach (var item in pendingOrders)
+                        { @RenderOrderCard(item)}
+                }
+                </div>
+
+                <!-- TAB 3: ĐANG XỬ LÝ -->
+                <div class="tab-pane fade" id="processing" role="tabpanel">
+                    @{ var processingOrders = Model.Where(o => o.PaymentStatus != "Chưa thanh toán"); }
+                    @if (!processingOrders.Any())
+                    {<p class="text-center mt-3">Không có đơn hàng nào.</p> }
+                    else
+                    {
+                        foreach (var item in processingOrders)
+                        { @RenderOrderCard(item)}
+                }
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ĐOẠN CODE DÙNG CHUNG ĐỂ VẼ 1 ĐƠN HÀNG & GẮN LINK NÚT XEM CHI TIẾT -->
+@helper RenderOrderCard(_25DH110915_LTW.Models.Order item)
+{
+    <div class="card mb-4 shadow-sm border-0">
+        <div class="card-header bg-light border-bottom d-flex justify-content-between align-items-center py-3">
+            <span class="fw-bold text-success"><i class="fa fa-box"></i> Mã đơn: #@item.OrderID</span>
+            <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fs-6">@item.PaymentStatus</span>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-8">
+                    <p class="mb-1"><strong>Ngày đặt:</strong> @item.OrderDate.ToString("dd/MM/yyyy HH:mm")</p>
+                    <p class="mb-1"><strong>Giao hàng:</strong> @item.DeliveryMethod</p>
+                    <p class="mb-1"><strong>Thanh toán:</strong> @item.PaymentMethod</p>
+                </div>
+                <div class="col-md-4 text-end border-start">
+                    <p class="text-muted mb-1">Tổng tiền:</p>
+                    <h5 class="text-danger fw-bold mb-3">@String.Format("{0:N0}", item.TotalAmount) đ</h5>
+
+                    <!-- NÚT XEM CHI TIẾT ĐÃ ĐƯỢC GẮN LINK TỚI HÀM ORDERDETAILS -->
+                    <a href="@Url.Action("OrderDetails", "Order", new { id = item.OrderID })" class="btn btn-outline-info btn-sm rounded-pill px-3">
+                        Xem chi tiết
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- Danh sách đơn hàng -->
+<div class="tab-content" id="orderTabsContent">
+    <div class="tab-pane fade show active" id="all" role="tabpanel">
+        @if (!Model.Any())
+        {
+            <div class="alert alert-warning text-center">Bạn chưa có đơn hàng nào. <a href="@Url.Action("Index", "Home")">Mua sắm ngay</a></div>
+        }
+        else
+        {
+            foreach (var item in Model)
+            {
+                <div class="card mb-4 shadow-sm border-0">
+                    <div class="card-header bg-white border-bottom d-flex justify-content-between align-items-center py-3">
+                        <span class="fw-bold text-success"><i class="fa fa-box"></i> Mã đơn: #@item.OrderID</span>
+                        <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fs-6">@item.PaymentStatus</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <p class="mb-1"><strong>Ngày đặt:</strong> @item.OrderDate.ToString("dd/MM/yyyy HH:mm")</p>
+                                <p class="mb-1"><strong>Giao hàng:</strong> @item.DeliveryMethod</p>
+                                <p class="mb-1"><strong>Thanh toán:</strong> @item.PaymentMethod</p>
+                            </div>
+                            <div class="col-md-4 text-end border-start">
+                                <p class="text-muted mb-1">Tổng tiền:</p>
+                                <h5 class="text-danger fw-bold mb-3">@String.Format("{0:N0}", item.TotalAmount) đ</h5>
+                                <button class="btn btn-outline-info btn-sm rounded-pill px-3">Xem chi tiết</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+    <!-- Nội dung các tab khác có thể phát triển thêm sau bằng Javascript để lọc dữ liệu -->
+</div>
+        
+    

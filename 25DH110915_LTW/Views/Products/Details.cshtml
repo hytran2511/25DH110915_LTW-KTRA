@@ -1,0 +1,28 @@
+﻿@model _25DH110915_LTW.Models.Product
+
+@{
+    ViewBag.Title = Model.ProductName;
+    // Sử dụng Layout của khách hàng
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5 mb-5">
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+
+            <!-- GỌI GIAO DIỆN DÙNG CHUNG MÀ BẠN ĐÃ TẠO LÚC NÃY -->
+            @Html.Partial("~/Views/Shared/_ProductDetailPartial.cshtml", Model)
+
+        </div>
+
+        <!-- KHÁCH HÀNG THÌ CÓ NÚT THÊM VÀO GIỎ HÀNG -->
+        <div class="card-footer bg-white text-center py-4">
+            <a href="@Url.Action("AddToCart", "Cart", new { id = Model.ProductID })" class="btn btn-primary btn-lg fw-bold px-4">
+                <i class="fa fa-cart-plus me-2"></i> Thêm vào giỏ hàng
+            </a>
+            <a href="javascript:history.back()" class="btn btn-outline-secondary btn-lg ms-3 px-4">
+                Quay lại
+            </a>
+        </div>
+    </div>
+</div>  

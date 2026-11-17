@@ -1,0 +1,45 @@
+﻿@model _25DH110915_LTW.Models.Category
+
+@{
+    ViewBag.Title = "Delete";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2 class="bg-warning">XÓA DANH MỤC</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="form-horizontal">
+        <hr />
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <h4 class="danger">Bạn có muốn xóa danh này không</h4>
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <div class="control-label col-md-2">Tên danh mục</div>
+            <div class="col-md-10"></div>
+            @* Giá trị của trường CategoryName *@
+            @Html.DisplayFor(model => model.CategoryName)
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-8 col-md-4">
+                <input type="submit" value="Xóa" class="btn btn-primary" /> |
+                @Html.ActionLink("Quay lại danh sách", "Index", null, new { @class = "btn btn-primary" })
+            </div>
+
+        </div>
+    </div>
+
+
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
+    </div>
+}

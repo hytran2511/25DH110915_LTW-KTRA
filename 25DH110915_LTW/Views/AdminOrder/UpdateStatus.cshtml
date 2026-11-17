@@ -1,0 +1,57 @@
+﻿@model _25DH110915_LTW.Models.Order
+
+@{
+    ViewBag.Title = "Xử lý đơn hàng";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0 border-top border-primary border-4">
+                <div class="card-header bg-white pb-0">
+                    <h4 class="fw-bold text-primary mb-3"><i class="fa fa-edit"></i> XỬ LÝ ĐƠN HÀNG #@Model.OrderID</h4>
+                </div>
+                <div class="card-body p-4">
+
+                    <div class="mb-3 border-bottom pb-2">
+                        <span class="text-muted">Khách hàng:</span>
+                        <strong class="float-end">@Model.Customer.CustomerName</strong>
+                    </div>
+                    <div class="mb-3 border-bottom pb-2">
+                        <span class="text-muted">Ngày đặt:</span>
+                        <strong class="float-end">@String.Format("{0:dd/MM/yyyy HH:mm}", Model.OrderDate)</strong>
+                    </div>
+                    <div class="mb-4 border-bottom pb-2">
+                        <span class="text-muted">Tổng tiền:</span>
+                        <strong class="float-end text-danger fs-5">@String.Format("{0:N0} VNĐ", Model.TotalAmount)</strong>
+                    </div>
+
+                    @using (Html.BeginForm("UpdateStatus", "AdminOrder", FormMethod.Post))
+                    {
+                        @Html.Hidden("id", Model.OrderID)
+
+                        <div class="mb-4 bg-light p-3 rounded">
+                            <label class="form-label fw-bold text-dark">Cập nhật trạng thái hiện tại:</label>
+                            <select name="PaymentStatus" class="form-select form-select-lg border-primary">
+                                <option value="Chờ thanh toán" @(Model.PaymentStatus == "Chờ thanh toán" || string.IsNullOrEmpty(Model.PaymentStatus) ? "selected" : "")>Chờ thanh toán / Chờ xử lý</option>
+                                <option value="Đang xử lý" @(Model.PaymentStatus == "Đang xử lý" ? "selected" : "")>Đang xử lý</option>
+                                <option value="Đang vận chuyển" @(Model.PaymentStatus == "Đang vận chuyển" ? "selected" : "")>Đang vận chuyển</option>
+                                <option value="Đã giao hàng" @(Model.PaymentStatus == "Đã giao hàng" ? "selected" : "")>Đã giao hàng</option>
+                            </select>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a href="@Url.Action("Index", "AdminOrder")" class="btn btn-outline-secondary px-4">
+                                <i class="fa fa-arrow-left"></i> Quay lại
+                            </a>
+                            <button type="submit" class="btn btn-primary px-4">
+                                <i class="fa fa-save"></i> Lưu trạng thái
+                            </button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

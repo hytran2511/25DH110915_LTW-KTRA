@@ -1,0 +1,44 @@
+﻿@model _25DH110915_LTW.Models.Customer
+@{
+    ViewBag.Title = "Sổ địa chỉ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4 mb-5">
+    <div class="row">
+        <!-- MENU TRÁI -->
+        <div class="col-md-3">
+            <div class="list-group list-group-flush" style="border-radius: 8px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                <a href="@Url.Action("ProfileInfo", "Account")" class="list-group-item list-group-item-action text-secondary border-0">
+                    <i class="fa fa-user me-2"></i> Thông tin tài khoản
+                </a>
+                <a href="@Url.Action("MyOrder", "Order")" class="list-group-item list-group-item-action text-secondary border-0">
+                    <i class="fa fa-clipboard-list me-2"></i> Quản lý đơn hàng
+                </a>
+                <a href="@Url.Action("AddressBook", "Account")" class="list-group-item list-group-item-action bg-light text-primary fw-bold border-0">
+                    <i class="fa fa-map-marker-alt me-2 text-secondary"></i> Sổ địa chỉ
+                </a>
+            </div>
+        </div>
+
+        <!-- THÔNG TIN ĐỊA CHỈ -->
+        <div class="col-md-9">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="mb-0 fw-light">Sổ địa chỉ nhận hàng</h4>
+                <a href="@Url.Action("ProfileInfo", "Account")" class="btn btn-outline-primary btn-sm"><i class="fa fa-edit"></i> Chỉnh sửa địa chỉ</a>
+            </div>
+
+            <div class="card border-0 shadow-sm rounded-3 mb-3 border-start border-4 border-info">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between">
+                        <h6 class="fw-bold mb-2">@Model.CustomerName <span class="badge bg-success ms-2">Mặc định</span></h6>
+                        <span class="text-muted"><i class="fa fa-phone-alt"></i> @Model.CustomerPhone</span>
+                    </div>
+                    <p class="text-muted mb-0 mt-2">
+                        <i class="fa fa-map-marker-alt text-danger me-1"></i> @Model.CustomerAddress
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

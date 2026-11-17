@@ -1,0 +1,30 @@
+﻿@model IEnumerable<_25DH110915_LTW.Models.OrderDetail>
+
+<table class="table table-bordered">
+    <thead>
+        <tr style="background-color: #f8f9fa;">
+            <th>Hình ảnh</th>
+            <th>Sản phẩm</th>
+            <th class="text-center">Số lượng</th>
+            <th class="text-right">Đơn giá</th>
+            <th class="text-right">Thành tiền</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td style="width: 80px;">
+                    <img src="@item.Product.ProductImage" style="max-height: 50px;" />
+                </td>
+                <td>@item.Product.ProductName</td>
+                <td class="text-center">@item.Quantity</td>
+                <td class="text-right">@item.UnitPrice.ToString("N0")</td>
+                <!-- Tính thành tiền từng dòng -->
+                <td class="text-right font-weight-bold text-danger">
+                    @((item.Quantity * item.UnitPrice).ToString("N0"))
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

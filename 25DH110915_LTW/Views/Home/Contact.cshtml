@@ -1,0 +1,103 @@
+﻿@{
+    ViewBag.Title = "Liên hệ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card shadow-sm border-0 rounded-3 overflow-hidden">
+                <!-- Banner Tiêu đề -->
+                <div class="card-header bg-primary text-white text-center py-5" style="background: linear-gradient(135deg, #00bcd4 0%, #2196f3 100%); border-bottom: 0;">
+                    <h2 class="mb-0 fw-bold text-uppercase"><i class="fa fa-headset me-2"></i> LIÊN HỆ VỚI MY STORE</h2>
+                    <p class="mb-0 mt-2 fs-5">Chúng tôi luôn sẵn sàng lắng nghe và hỗ trợ bạn 24/7</p>
+                </div>
+
+                <div class="card-body p-5 bg-white">
+                    <div class="row">
+                        <!-- Cột Trái: Thông tin liên hệ -->
+                        <div class="col-md-5 border-end pe-4 mb-4 mb-md-0">
+                            <h4 class="fw-bold mb-4" style="color: #2c3e50;">Thông Tin Liên Hệ</h4>
+
+                            <div class="d-flex align-items-center mb-4">
+                                <div class="bg-light p-3 rounded-circle me-3 text-primary text-center" style="width: 60px; height: 60px; line-height: 30px;">
+                                    <i class="fa fa-map-marker-alt fa-lg"></i>
+                                </div>
+                                <div>
+                                    <h6 class="fw-bold mb-1 text-dark">Địa chỉ:</h6>
+                                    <p class="text-muted mb-0">828 Sư Vạn Hạnh, Phường 13, Quận 10, TP.HCM</p>
+                                </div>
+                            </div>
+
+                            <div class="d-flex align-items-center mb-4">
+                                <div class="bg-light p-3 rounded-circle me-3 text-success text-center" style="width: 60px; height: 60px; line-height: 30px;">
+                                    <i class="fa fa-phone-alt fa-lg"></i>
+                                </div>
+                                <div>
+                                    <h6 class="fw-bold mb-1 text-dark">Điện thoại hỗ trợ:</h6>
+                                    <p class="text-muted mb-0">1900 1234 (Miễn phí)</p>
+                                </div>
+                            </div>
+
+                            <div class="d-flex align-items-center mb-4">
+                                <div class="bg-light p-3 rounded-circle me-3 text-danger text-center" style="width: 60px; height: 60px; line-height: 30px;">
+                                    <i class="fa fa-envelope fa-lg"></i>
+                                </div>
+                                <div>
+                                    <h6 class="fw-bold mb-1 text-dark">Email:</h6>
+                                    <p class="text-muted mb-0">support@mystore.com.vn</p>
+                                </div>
+                            </div>
+
+                            <hr class="my-4" />
+
+                            <h6 class="fw-bold text-dark mb-3">Kết nối với chúng tôi:</h6>
+                            <div class="d-flex gap-2">
+                                <a href="#" class="btn btn-outline-primary rounded-circle" style="width: 40px; height: 40px; padding: 7px;"><i class="fab fa-facebook-f"></i></a>
+                                <a href="#" class="btn btn-outline-info rounded-circle" style="width: 40px; height: 40px; padding: 7px;"><i class="fab fa-twitter"></i></a>
+                                <a href="#" class="btn btn-outline-danger rounded-circle" style="width: 40px; height: 40px; padding: 7px;"><i class="fab fa-youtube"></i></a>
+                                <a href="#" class="btn btn-outline-dark rounded-circle" style="width: 40px; height: 40px; padding: 7px;"><i class="fab fa-tiktok"></i></a>
+                            </div>
+                        </div>
+
+                        <!-- Cột Phải: Form gửi tin nhắn -->
+                        <div class="col-md-7 ps-md-5">
+                            <h4 class="fw-bold mb-4" style="color: #2c3e50;">Gửi Tin Nhắn Cho Chúng Tôi</h4>
+                            <form action="#" method="post">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold text-secondary">Họ và Tên <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control form-control-lg bg-light border-0" placeholder="Nhập họ tên của bạn..." required>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label fw-bold text-secondary">Email <span class="text-danger">*</span></label>
+                                        <input type="email" class="form-control form-control-lg bg-light border-0" placeholder="Địa chỉ email..." required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label fw-bold text-secondary">Số điện thoại</label>
+                                        <input type="tel" class="form-control form-control-lg bg-light border-0" placeholder="Số điện thoại liên hệ...">
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold text-secondary">Nội dung cần hỗ trợ <span class="text-danger">*</span></label>
+                                    <textarea class="form-control bg-light border-0" rows="5" placeholder="Vui lòng mô tả chi tiết vấn đề bạn đang gặp phải..." required></textarea>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary btn-lg px-5 fw-bold rounded-pill" style="background: linear-gradient(135deg, #00bcd4 0%, #2196f3 100%); border: none;">
+                                    <i class="fa fa-paper-plane me-2"></i> Gửi Tin Nhắn
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bản đồ Placeholder (Tùy chọn) -->
+                <div class="card-footer p-0 border-0">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.460232421115!2d106.66479701462243!3d10.776019492321852!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752edbaa8acd71%3A0xf510ab1c5b8b9df!2zODI4IFPGsCBW4bqhbmggSOG6oW5oLCBQaMaw4budbmcgMTMsIFF14bqtbiAxMCwgVGjDoG5oIHBo4buRIEjhu5MgQ2jDrSBNaW5o!5e0!3m2!1svi!2s!4v1684300000000!5m2!1svi!2s" width="100%" height="300" style="border:0; display: block;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

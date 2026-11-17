@@ -1,0 +1,82 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Admin Dashboard</title>
+    <!-- Bootstrap & FontAwesome -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #f4f6f9;
+        }
+
+        .sidebar {
+            min-height: 100vh;
+            background-color: #343a40;
+        }
+
+            .sidebar a {
+                color: #c2c7d0;
+                text-decoration: none;
+                padding: 12px 20px;
+                display: block;
+                border-bottom: 1px solid #4f5962;
+            }
+
+                .sidebar a:hover, .sidebar a.active {
+                    background-color: #007bff;
+                    color: white;
+                }
+    </style>
+</head>
+<body>
+    <div class="d-flex">
+        <!-- CỘT MENU TRÁI (SIDEBAR) -->
+        <div class="sidebar" style="width: 250px;">
+            <h4 class="text-white text-center py-4 mb-0 fw-bold border-bottom border-secondary">
+                <i class="fa fa-cogs"></i> MY STORE ADMIN
+            </h4>
+
+            <a href="@Url.Action("Index", "AdminHome")">
+                <i class="fa fa-chart-line me-2"></i> Báo cáo thống kê
+            </a>
+            <a href="@Url.Action("Index", "AdminOrder")">
+                <i class="fa fa-clipboard-list me-2"></i> Quản lý đơn hàng
+            </a>
+            <a href="@Url.Action("Index", "AdminProduct")">
+                <i class="fa fa-box me-2"></i> Quản lý sản phẩm
+            </a>
+
+            <!-- LINK QUẢN LÝ KHO HÀNG VỪA THÊM -->
+            <a href="@Url.Action("Index", "AdminInventory")">
+                <i class="fa fa-warehouse me-2"></i> Quản lý kho hàng
+            </a>
+
+            <a href="@Url.Action("Index", "AdminCategory")">
+                <i class="fa fa-list me-2"></i> Quản lý danh mục
+            </a>
+            <a href="@Url.Action("Index", "AdminCustomer")">
+                <i class="fa fa-users me-2"></i> Quản lý khách hàng
+            </a>
+
+            <a href="@Url.Action("Logout", "Account")" class="text-danger mt-5 border-0">
+                <i class="fa fa-sign-out-alt me-2"></i> Đăng xuất
+            </a>
+        </div>
+        <!-- CỘT NỘI DUNG CHÍNH BÊN PHẢI -->
+        <div class="flex-grow-1">
+            <!-- Thanh Topbar nhỏ -->
+            <div class="bg-white shadow-sm p-3 mb-4 d-flex justify-content-end">
+                <span class="text-muted"><i class="fa fa-user-shield text-primary"></i> Xin chào, Quản trị viên!</span>
+            </div>
+
+            <!-- Khu vực thay đổi nội dung (RenderBody) -->
+            <div class="px-4">
+                @RenderBody()
+            </div>
+        </div>
+    </div>
+</body>
+</html>

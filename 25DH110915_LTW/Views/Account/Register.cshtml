@@ -1,0 +1,60 @@
+﻿@model _25DH110915_LTW.Models.Customer
+@{
+    ViewBag.Title = "Đăng ký tài khoản";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row justify-content-center mt-5 mb-5">
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-success text-white text-center py-3">
+                <h4 class="mb-0 fw-bold">ĐĂNG KÝ TÀI KHOẢN MỚI</h4>
+            </div>
+            <div class="card-body p-4">
+                @if (ViewBag.ErrorRegister != null)
+                {
+                    <div class="alert alert-danger">@ViewBag.ErrorRegister</div>
+                }
+
+                @using (Html.BeginForm("Register", "Account", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    <!-- Khu vực tạo Tài khoản (Bảng User) -->
+                    <h6 class="text-primary fw-bold mb-3 border-bottom pb-2">Thông tin đăng nhập</h6>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Tên đăng nhập (Username)</label>
+                        <input type="text" name="txtUsername" class="form-control" placeholder="Tạo tên đăng nhập (VD: khachhang01)..." required />
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Mật khẩu</label>
+                        <input type="password" name="txtPassword" class="form-control" placeholder="Tạo mật khẩu..." required />
+                    </div>
+
+                    <!-- Khu vực Thông tin cá nhân (Bảng Customer) -->
+                    <h6 class="text-primary fw-bold mb-3 border-bottom pb-2">Thông tin cá nhân</h6>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Họ và Tên</label>
+                        @Html.TextBoxFor(m => m.CustomerName, new { @class = "form-control", placeholder = "Nhập họ tên đầy đủ...", required = "required" })
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Số điện thoại</label>
+                        @Html.TextBoxFor(m => m.CustomerPhone, new { @class = "form-control", required = "required" })
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Email</label>
+                        @Html.TextBoxFor(m => m.CustomerEmail, new { @class = "form-control", type = "email" })
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Địa chỉ giao hàng</label>
+                        @Html.TextBoxFor(m => m.CustomerAddress, new { @class = "form-control" })
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100 fw-bold py-2">Đăng Ký Tài Khoản</button>
+                }
+                <div class="text-center mt-3">
+                    Đã có tài khoản? <a href="@Url.Action("Login", "Account")" class="text-decoration-none">Đăng nhập ngay</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

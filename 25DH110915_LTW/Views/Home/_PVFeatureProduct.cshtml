@@ -1,0 +1,21 @@
+﻿@model _25DH110915_LTW.Models.ViewModel.HomeProductVM
+
+@if (Model.FeaturedProducts != null && Model.FeaturedProducts.Any())
+{
+    <section class="container-fluid featureProd">
+        <h2 class="text-center text-danger">Sản phẩm nổi bật</h2>
+        <div class="row">
+            @foreach (var product in Model.FeaturedProducts)
+            {
+                <div class="col-md-2 text-center" style="border: 1px solid #ddd; margin: 10px; padding: 10px; border-radius: 5px;">
+                    <a href="@Url.Action("ProductDetail", "Home", new { id = product.ProductID })">
+                        <img src="@Url.Content(product.ProductImage)" style="max-height: 150px; max-width: 100%;" alt="@product.ProductName" />
+                    </a>
+                    <p class="text-primary font-weight-bold" style="margin-top: 10px;">@product.ProductPrice.ToString("N0") VNĐ</p>
+                    <p><b>@product.ProductName</b></p>
+                    <p>Đã bán: @product.OrderDetails.Count</p>
+                </div>
+            }
+        </div>
+    </section>
+}

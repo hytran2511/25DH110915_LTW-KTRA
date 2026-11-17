@@ -1,0 +1,93 @@
+﻿@model _25DH110915_LTW.Models.ViewModel.CheckoutVM
+@{
+    ViewBag.Title = "Thanh toán";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- JAVASCRIPT XỬ LÝ CHỈNH SỬA ĐỊA CHỈ -->
+<script>
+    function enableAddressEdit() {
+        document.getElementById("shippingAddress").removeAttribute("readonly");
+        document.getElementById("newAddressGroup").style.display = "block";
+    }
+    function updateShippingAddress() {
+        var newAddress = document.getElementById("newShippingAddress").value;
+        if (newAddress) {
+            document.getElementById("shippingAddress").value = newAddress;
+        }
+    }
+</script>
+
+<div class="container mt-4 mb-5">
+    <h2 class="text-info fw-bold mb-4">ĐẶT HÀNG</h2>
+
+    @using (Html.BeginForm("Checkout", "Order", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+    {
+        @Html.AntiForgeryToken()
+        <div class="row">
+            <div class="col-md-7">
+                <h4 class="mb-3">Thông tin giao hàng</h4>
+
+                <!-- Bảng sản phẩm -->
+                <table class="table table-bordered">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Sản phẩm</th>
+                            <th>Số lượng</th>
+                            <th>Đơn giá</th>
+                            <th>Thành tiền</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.CartItems)
+                        {
+                            <tr>
+                                <td>@item.ProductName</td>
+                                <td>@item.Quantity</td>
+                                <td>@String.Format("{0:N0}", item.Price) đ</td>
+                                <td>@String.Format("{0:N0}", item.TotalPrice) đ</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <h5 class="text-end text-danger fw-bold">Tổng tiền: @String.Format("{0:N0}", Model.TotalAmount) đ</h5>
+
+                <!-- Chọn hình thức giao hàng và thanh toán -->
+                <div class="mt-4">
+                    <div class="form-group mb-3">
+                        <label class="fw-bold mb-2">Phương thức giao hàng</label><br />
+                        @Html.RadioButtonFor(m => m.ShippingMethod, "Giao hàng nhanh", new { @checked = "checked" }) Giao hàng nhanh <br />
+                        @Html.RadioButtonFor(m => m.ShippingMethod, "Giao hàng tiết kiệm") Giao hàng tiết kiệm
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label class="fw-bold mb-2">Phương thức thanh toán</label><br />
+                        @Html.RadioButtonFor(m => m.PaymentMethod, "Tiền mặt", new { @checked = "checked" }) Thanh toán tiền mặt (COD) <br />
+                        @Html.RadioButtonFor(m => m.PaymentMethod, "Paypal") Paypal <br />
+                        @Html.RadioButtonFor(m => m.PaymentMethod, "Mua trước trả sau") Mua trước trả sau
+                    </div>
+                </div>
+            </div>
+
+            <!-- Khung nhập địa chỉ -->
+            <div class="col-md-5">
+                <div class="card p-3 shadow-sm border-info">
+                    <h5 class="fw-bold">Địa chỉ nhận hàng</h5>
+                    <div class="form-group mb-3">
+                        @Html.LabelFor(m => m.ShippingAddress, new { @class = "control-label" })
+                        <!-- ID = shippingAddress để JS điều khiển -->
+                        @Html.TextBoxFor(m => m.ShippingAddress, new { @class = "form-control", @readonly = "readonly", id = "shippingAddress" })
+                        <button type="button" class="btn btn-sm btn-link mt-1" onclick="enableAddressEdit()">Chỉnh sửa địa chỉ khác</button>
+                    </div>
+
+                    <div class="form-group mb-3" id="newAddressGroup" style="display:none;">
+                        <label class="control-label text-primary">Nhập địa chỉ mới</label>
+                        <input type="text" id="newShippingAddress" name="newShippingAddress" class="form-control border-primary" placeholder="Số nhà, Tên đường..." />
+                    </div>
+
+                    <button type="submit" class="btn btn-info w-100 fw-bold mt-3 text-white" onclick="updateShippingAddress()">ĐẶT HÀNG NGAY</button>
+                </div>
+            </div>
+        </div>
+    }
+</div>

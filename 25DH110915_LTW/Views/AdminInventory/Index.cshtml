@@ -1,0 +1,90 @@
+﻿@{
+    ViewBag.Title = "Quản lý Kho Hàng";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container mt-4 mb-5">
+    <h3 class="fw-bold text-primary mb-4"><i class="fa fa-warehouse"></i> QUẢN LÝ KHO HÀNG</h3>
+
+    <!-- BẢNG HÀNG CẦN NHẬP (ƯU TIÊN HIỂN THỊ TRÊN) -->
+    <div class="card shadow-sm border-0 border-top border-danger border-4 mb-5">
+        <div class="card-header bg-white pb-0">
+            <h5 class="fw-bold text-danger"><i class="fa fa-exclamation-triangle"></i> DANH SÁCH HÀNG CẦN NHẬP (@ViewBag.OutOfStock.Count SP)</h5>
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-hover table-bordered mb-0 align-middle">
+                <thead class="table-light text-center">
+                    <tr>
+                        <th style="width: 10%;">Mã SP</th>
+                        <th style="width: 15%;">Ảnh</th>
+                        <th>Tên Sản Phẩm</th>
+                        <th style="width: 15%;">Giá Bán</th>
+                        <th style="width: 15%;">Tình Trạng</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in ViewBag.OutOfStock)
+                    {
+                        <tr>
+                            <td class="text-center fw-bold">#@item.ProductID</td>
+                            <td class="text-center">
+                                <img src="~/Images/@item.ProductImage" style="width:50px; height:50px; object-fit:cover;" class="rounded shadow-sm" />
+                            </td>
+                            <td class="fw-bold">@item.ProductName</td>
+                            <td class="text-center text-danger">@String.Format("{0:N0}", item.ProductPrice) đ</td>
+                            <td class="text-center"><span class="badge bg-danger fs-6 px-3 py-2">Hết hàng</span></td>
+                        </tr>
+                    }
+                    @if (ViewBag.OutOfStock.Count == 0)
+                    {
+                        <tr>
+                            <td colspan="5" class="text-center text-success fw-bold py-4">
+                                <i class="fa fa-check-circle fa-2x mb-2 d-block"></i> Hiện không có mặt hàng nào cần nhập!
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- BẢNG HÀNG TỒN KHO -->
+    <div class="card shadow-sm border-0 border-top border-success border-4">
+        <div class="card-header bg-white pb-0">
+            <h5 class="fw-bold text-success"><i class="fa fa-boxes"></i> DANH SÁCH HÀNG TỒN KHO (@ViewBag.InStock.Count SP)</h5>
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-hover table-bordered mb-0 align-middle">
+                <thead class="table-light text-center">
+                    <tr>
+                        <th style="width: 10%;">Mã SP</th>
+                        <th style="width: 15%;">Ảnh</th>
+                        <th>Tên Sản Phẩm</th>
+                        <th style="width: 15%;">Giá Bán</th>
+                        <th style="width: 15%;">Số Lượng Tồn</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in ViewBag.InStock)
+                    {
+                        <tr>
+                            <td class="text-center fw-bold">#@item.ProductID</td>
+                            <td class="text-center">
+                                <img src="~/Images/@item.ProductImage" style="width:50px; height:50px; object-fit:cover;" class="rounded shadow-sm" />
+                            </td>
+                            <td class="fw-bold">@item.ProductName</td>
+                            <td class="text-center text-secondary">@String.Format("{0:N0}", item.ProductPrice) đ</td>
+                            <td class="text-center"><span class="badge bg-success fs-6 px-3 py-2">@item.Quantity</span></td>
+                        </tr>
+                    }
+                    @if (ViewBag.InStock.Count == 0)
+                    {
+                        <tr>
+                            <td colspan="5" class="text-center text-danger fw-bold py-4">Kho hàng đang trống!</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

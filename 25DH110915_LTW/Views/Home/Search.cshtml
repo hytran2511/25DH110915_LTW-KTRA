@@ -1,0 +1,85 @@
+﻿@model IEnumerable<_25DH110915_LTW.Models.Product>
+
+@{
+    ViewBag.Title = "Kết quả tìm kiếm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    /* CSS cho thẻ sản phẩm (giống trang chủ) */
+    .product-card {
+        text-align: center;
+        padding: 15px;
+        background: #fff;
+        border: 1px solid transparent;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+        .product-card:hover {
+            border-color: #eee;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transform: translateY(-5px);
+        }
+
+    .product-img {
+        width: 100%;
+        height: 200px;
+        object-fit: contain;
+        margin-bottom: 15px;
+    }
+
+    .product-title {
+        font-size: 14px;
+        color: #555;
+        margin-bottom: 10px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .product-price {
+        font-size: 16px;
+        font-weight: bold;
+        color: #e74c3c;
+        margin-bottom: 15px;
+    }
+</style>
+
+<div class="container mt-5 mb-5 min-vh-100">
+    <h3 class="mb-4">
+        Kết quả tìm kiếm cho: <span class="text-primary">"@ViewBag.Keyword"</span>
+    </h3>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 row-cols-lg-5 g-4">
+            @foreach (var item in Model)
+            {
+                <div class="col">
+                    <div class="product-card h-100 shadow-sm">
+                        <a href="@Url.Action("Details", "Products", new { id = item.ProductID, area = "" })" class="text-decoration-none">
+                            <img src="@item.ProductImage" alt="@item.ProductName" class="product-img" onerror="this.src='https://via.placeholder.com/200?text=No+Image'" />
+                        </a>
+
+                        <h3 class="product-title" title="@item.ProductName">@item.ProductName</h3>
+                        <p class="product-price">@String.Format("{0:N0}", item.ProductPrice) VNĐ</p>
+
+                        <a href="@Url.Action("AddToCart", "Cart", new { id = item.ProductID, area = "" })" class="btn btn-sm btn-outline-secondary w-100">
+                            <i class="fa fa-shopping-cart"></i> Thêm vào giỏ
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="text-center mt-5">
+            <img src="https://cdn-icons-png.flaticon.com/512/2748/2748558.png" width="120" class="mb-3 opacity-50" />
+            <h4 class="text-muted">Rất tiếc, không tìm thấy sản phẩm nào!</h4>
+            <p>Vui lòng thử lại với từ khóa khác.</p>
+            <a href="@Url.Action("Index", "Home")" class="btn btn-primary mt-3">Quay về trang chủ</a>
+        </div>
+    }
+</div>

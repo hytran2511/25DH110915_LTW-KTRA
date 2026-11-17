@@ -1,0 +1,31 @@
+﻿@model _25DH110915_LTW.Models.ViewModel.HomeProductVM
+@using PagedList.Mvc;
+
+@if (Model.NewProducts != null && Model.NewProducts.Any())
+{
+    <section class="container-fluid listProduct">
+        <h2 class="text-center text-danger">Sản phẩm mới</h2>
+        <div class="row">
+            @foreach (var product in Model.NewProducts)
+            {
+                <div class="col-md-4 text-center" style="border: 1px solid #ddd; padding: 15px; margin-bottom: 15px;">
+                    <a href="@Url.Action("ProductDetail", "Home", new { id = product.ProductID })">
+                        <img src="@Url.Content(product.ProductImage)" style="max-height: 200px; max-width: 100%;" alt="@product.ProductName" />
+                    </a>
+                    <p class="text-primary font-weight-bold" style="margin-top: 10px; font-size: 1.2em;">@product.ProductPrice.ToString("N0") VNĐ</p>
+                    <p><b>@product.ProductName</b></p>
+                    <p>Danh mục: @product.Category.CategoryName</p>
+                </div>
+            }
+        </div>
+
+        <!-- Phân trang -->
+        <div class="text-center">
+            @Html.PagedListPager(Model.NewProducts, page => Url.Action("Index", new
+            {
+                page,
+                searchTerm = Model.SearchTerm
+            }))
+        </div>
+    </section>
+}

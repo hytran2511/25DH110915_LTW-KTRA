@@ -1,0 +1,37 @@
+﻿@model IEnumerable<_25DH110915_LTW.Models.Product>
+
+@{
+    ViewBag.Title = "Danh sách sản phẩm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5 mb-5">
+    <h2 class="mb-4 fw-bold">Danh sách sản phẩm</h2>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">Chưa có sản phẩm nào thuộc danh mục này.</div>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 row-cols-lg-5 g-4">
+            @foreach (var item in Model)
+            {
+                <div class="col">
+                    <div class="product-card h-100 border p-3 text-center shadow-sm rounded">
+                        <a href="@Url.Action("Details", "Products", new { id = item.ProductID })" class="text-decoration-none">
+                            <img src="~/Images/@item.ProductImage" alt="@item.ProductName" style="width: 100%; height: 200px; object-fit: contain; margin-bottom: 15px;" onerror="this.src='https://via.placeholder.com/200?text=No+Image'" />
+                        </a>
+                        <a href="@Url.Action("Details", "Products", new { id = item.ProductID })" class="text-decoration-none text-dark">
+                            <h5 class="mt-2" style="font-size: 1rem; height: 40px; overflow: hidden;">@item.ProductName</h5>
+                        </a>
+                        <p class="text-danger fw-bold mt-2">@String.Format("{0:N0}", item.ProductPrice) VNĐ</p>
+                        <a href="@Url.Action("AddToCart", "Cart", new { id = item.ProductID })" class="btn btn-outline-secondary w-100">
+                            <i class="fa fa-shopping-cart"></i> Thêm vào giỏ
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

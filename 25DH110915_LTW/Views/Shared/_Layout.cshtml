@@ -1,0 +1,143 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Cửa Hàng Trực Tuyến</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+
+    <style>
+        body {
+            padding-top: 70px;
+            background-color: #f8f9fa;
+        }
+
+        .navbar-custom {
+            background-color: #ffffff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+
+            .navbar-custom .navbar-brand {
+                color: #e74c3c !important;
+                font-weight: 800;
+                font-size: 24px;
+            }
+
+            .navbar-custom .nav-link {
+                color: #2c3e50 !important;
+                font-weight: 600;
+                font-size: 16px;
+                margin: 0 10px;
+            }
+
+                .navbar-custom .nav-link:hover {
+                    color: #e74c3c !important;
+                }
+
+        .cart-icon {
+            position: relative;
+            font-size: 1.2rem;
+        }
+
+        .footer {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 40px 0 20px;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+    <!-- THANH ĐIỀU HƯỚNG (NAVBAR) CHO KHÁCH HÀNG -->
+    <nav class="navbar navbar-expand-lg navbar-light navbar-custom fixed-top">
+        <div class="container">
+            @Html.ActionLink("MY STORE", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#customerNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="customerNavbar">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">@Html.ActionLink("Trang chủ", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                    <li class="nav-item">@Html.ActionLink("Sản phẩm", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                    <li class="nav-item">@Html.ActionLink("Liên hệ", "Contact", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                </ul>
+                <!-- BẮT ĐẦU: THANH TÌM KIẾM -->
+                <form class="d-flex mx-auto my-2 my-lg-0" style="width: 350px;" action="@Url.Action("Index", "Home", new { area = "" })" method="GET">
+                    <div class="input-group shadow-sm" style="border-radius: 30px; overflow: hidden; border: 1px solid #ced4da;">
+                    
+                        <input type="text" class="form-control border-0 px-3" name="searchTerm" placeholder="Tìm kiếm sản phẩm..." style="box-shadow: none; font-size: 14px;">
+                        <button class="btn btn-primary px-3" type="submit" style="background-color: #00bcd4; border: none;">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+                </form>
+                <!-- KẾT THÚC: THANH TÌM KIẾM -->
+
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <!-- Nút Giỏ hàng -->
+                    <li class="nav-item me-3">
+                        <a href="@Url.Action("Index", "Cart", new { area = "" })" class="nav-link cart-icon text-danger">
+                            <i class="fa fa-shopping-cart"></i> Giỏ hàng
+                        </a>
+                    </li>
+
+                    <!-- KIỂM TRA ĐĂNG NHẬP KHÁCH HÀNG -->
+                    @{
+                        // Lấy thông tin khách hàng từ Session
+                        var customer = Session["Customer"] as _25DH110915_LTW.Models.Customer;
+                    }
+
+                    @if (customer == null)
+                    {
+                        <!-- CHƯA ĐĂNG NHẬP: Hiện nút Đăng nhập và Đăng ký -->
+                        <li class="nav-item me-2">
+                            <a href="@Url.Action("Login", "Account", new { area = "" })" class="btn btn-outline-primary btn-sm rounded-pill px-3">Đăng nhập</a>
+                        </li>
+                        <li class="nav-item me-3">
+                            <a href="@Url.Action("Register", "Account", new { area = "" })" class="btn btn-primary btn-sm rounded-pill px-3">Đăng ký</a>
+                        </li>
+                    }
+                    else
+                    {
+                        <!-- ĐÃ ĐĂNG NHẬP: Bấm vào tên để tới trang Profile -->
+                        <li class="nav-item me-3">
+                            <a class="nav-link fw-bold text-primary" href="@Url.Action("ProfileInfo", "Account", new { area = "" })" title="Xem thông tin tài khoản">
+                                <i class="fa fa-user-circle"></i> Chào, @customer.CustomerName
+                            </a>
+                        </li>
+
+                        <!-- Nút Đăng xuất đặt kế bên -->
+                        <li class="nav-item me-3 d-flex align-items-center">
+                            <a class="btn btn-outline-danger btn-sm rounded-pill px-3" href="@Url.Action("Logout", "Account", new { area = "" })">
+                                <i class="fa fa-sign-out-alt"></i> Đăng xuất
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- NỘI DUNG CHÍNH CỦA TRANG -->
+    <div class="container body-content min-vh-100">
+        @RenderBody()
+    </div>
+
+    <!-- FOOTER KHÁCH HÀNG -->
+    <footer class="footer text-center">
+        <div class="container">
+            <h5 class="fw-bold mb-3">ĐỒ ÁN LẬP TRÌNH WEB - 25DH110915_LTW</h5>
+            <p class="mb-1">Sinh viên thực hiện: Hồ Gia Nghĩa - MSSV: 25DH110915</p>
+            <p class="mb-0 text-muted">© @DateTime.Now.Year - Bản quyền thuộc về MyStore</p>
+        </div>
+    </footer>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

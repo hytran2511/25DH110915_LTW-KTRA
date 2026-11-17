@@ -1,0 +1,61 @@
+﻿@model _25DH110915_LTW.Models.Product
+
+@{
+    ViewBag.Title = "Thêm mới Sản phẩm";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="card mt-4" style="max-width: 800px; margin: 0 auto; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: none;">
+    <div class="card-header bg-success text-white text-center" style="font-size: 1.25rem; font-weight: bold; text-transform: uppercase;">
+        <i class="fa fa-plus-circle"></i> Thêm Mới Sản Phẩm
+    </div>
+    <div class="card-body" style="padding: 2rem;">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-horizontal">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger alert alert-danger" })
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold text-secondary">Thuộc Danh mục (CategoryID)</label>
+                    @Html.EditorFor(model => model.CategoryID, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.CategoryID, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold text-secondary">Tên Sản Phẩm (ProductName)</label>
+                    @Html.EditorFor(model => model.ProductName, new { htmlAttributes = new { @class = "form-control", placeholder = "Nhập tên sản phẩm..." } })
+                    @Html.ValidationMessageFor(model => model.ProductName, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold text-secondary">Mô tả chi tiết (ProductDescription)</label>
+                    @Html.EditorFor(model => model.ProductDecription, new { htmlAttributes = new { @class = "form-control", rows = "4", placeholder = "Nhập mô tả..." } })
+                    @Html.ValidationMessageFor(model => model.ProductDecription, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold text-secondary">Giá bán (ProductPrice)</label>
+                        <div class="input-group">
+                            @Html.EditorFor(model => model.ProductPrice, new { htmlAttributes = new { @class = "form-control" } })
+                            <span class="input-group-text">VNĐ</span>
+                        </div>
+                        @Html.ValidationMessageFor(model => model.ProductPrice, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold text-secondary">Đường dẫn Hình ảnh (ProductImage)</label>
+                        @Html.EditorFor(model => model.ProductImage, new { htmlAttributes = new { @class = "form-control", placeholder = "VD: https://..." } })
+                        @Html.ValidationMessageFor(model => model.ProductImage, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="text-center mt-4 pt-3 border-top">
+                    <button type="submit" class="btn btn-success px-5 fw-bold"><i class="fa fa-save"></i> Tạo Mới</button>
+                    @Html.ActionLink("Quay lại danh sách", "Index", null, new { @class = "btn btn-outline-secondary ms-2" })
+                </div>
+            </div>
+        }
+    </div>
+</div>

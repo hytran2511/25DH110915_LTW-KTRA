@@ -1,0 +1,80 @@
+﻿@model PagedList.IPagedList<_25DH110915_LTW.Models.Order>
+@using PagedList.Mvc
+
+@{
+    ViewBag.Title = "Danh sách đơn hàng";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2 class="bg-success" style="padding: 10px;">DANH SÁCH ĐƠN HÀNG</h2>
+
+<!-- Form Tìm kiếm -->
+<div style="margin-bottom: 20px;">
+    @using (Html.BeginForm("Index", "Orders", FormMethod.Get, new { @class = "form-inline" }))
+    {
+        <div class="form-group" style="display:inline-block; margin-right: 10px;">
+            <label>Tên khách hàng</label><br />
+            <input type="text" name="searchName" value="@ViewBag.SearchName" class="form-control" />
+        </div>
+        <div class="form-group" style="display:inline-block; margin-right: 10px;">
+            <label>Trạng thái thanh toán</label><br />
+            <select name="paymentStatus" class="form-control">
+                <option value="">-- Tất cả --</option>
+                <option value="Chưa thanh toán" @(ViewBag.PaymentStatus == "Chưa thanh toán" ? "selected" : "")>Chưa thanh toán</option>
+                <option value="Đã thanh toán" @(ViewBag.PaymentStatus == "Đã thanh toán" ? "selected" : "")>Đã thanh toán</option>
+                <option value="Thanh toán tiền mặt" @(ViewBag.PaymentStatus == "Thanh toán tiền mặt" ? "selected" : "")>Thanh toán tiền mặt</option>
+            </select>
+        </div>
+        <div class="form-group" style="display:inline-block; margin-right: 10px;">
+            <label>Ngày đặt hàng</label><br />
+            <input type="date" name="orderDate" value="@ViewBag.OrderDate" class="form-control" />
+        </div>
+        <div class="form-group" style="display:inline-block; vertical-align: bottom;">
+            <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+        </div>
+    }
+</div>
+
+<!-- Bảng dữ liệu -->
+@if (Model == null || !Model.Any())
+{
+    <div class="alert alert-warning text-center" style="font-size: 18px; font-weight: bold;">
+        KHÔNG CÓ
+    </div>
+}
+else
+{
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr class="bg-info">
+                <th>Ngày đặt hàng</th>
+                <th>Tên khách hàng</th>
+                <th>Tổng giá trị</th>
+                <th>Trạng thái TT</th>
+                <th>Phương thức Giao hàng</th>
+                <th>Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@String.Format("{0:dd/MM/yyyy HH:mm}", item.OrderDate)</td>
+                    <td>@item.Customer.CustomerName</td>
+                    <td style="color:red;">@item.TotalAmount.ToString("N0") VNĐ</td>
+                    <td>@item.PaymentStatus</td>
+                    <td>@item.DeliveryMethod</td>
+                    <td>
+                        <!-- TUYỆT ĐỐI CHỈ CÓ NÚT XEM CHI TIẾT -->
+                        @Html.ActionLink("Chi tiết đơn hàng", "Details", new { id = item.OrderID }, new { @class = "text-primary" })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <!-- Phân trang -->
+    <div>
+        @Html.PagedListPager(Model, page => Url.Action("Index", new { page, searchName = ViewBag.SearchName, paymentStatus = ViewBag.PaymentStatus, orderDate = ViewBag.OrderDate }))
+    </div>
+}
